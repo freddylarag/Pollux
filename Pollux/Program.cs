@@ -51,48 +51,57 @@ namespace Pollux
             try
             {
                 Console.WriteLine("\n");
-                Console.WriteLine("============================================================");
-                Console.WriteLine("                 Pollux v0.4     28/02/2017                 ");
-                Console.WriteLine("Automatización de casos de prueba para servicios SOAP y REST");
-                Console.WriteLine("============================================================");
+                Console.WriteLine("====================================================================");
+                Console.WriteLine("                   Pollux v0.4        build 28/02/2017              ");
+                Console.WriteLine("    Automatización de casos de prueba para servicios SOAP y REST    ");
+                Console.WriteLine("====================================================================");
                 Console.WriteLine();
 
                 var input = new Parameters(args);
                 Console.WriteLine("Espacio de trabajo:\n{0}", input.Workspace);
                 workspace = input.Workspace;
 
-                if (input.ProcessFiles.Count == 0)
+                if (input.Init)
                 {
-                    Console.WriteLine("\n************ PRECAUCION ************");
-                    Console.WriteLine("No existen archivos que procesar.");
+                    string plantilla = Path.Combine(input.Workspace, Guid.NewGuid().ToString() + ".config");
+                    Config.CreateTemplate(plantilla);
+                    Console.WriteLine("\nPlantilla creada:\n{0}", plantilla);
                 }
                 else
                 {
-                    Procesar(input);
-
-                    if (resumen.Count > 0)
+                    if (input.ProcessFiles.Count == 0)
                     {
-                        Console.WriteLine("\nResumen de errores detectados:");
-                        foreach (var item in resumen)
-                        {
-                            Console.WriteLine(item);
-                        }
+                        Console.WriteLine("\n************ PRECAUCION ************");
+                        Console.WriteLine("No existen archivos que procesar.");
                     }
-                    if (resumenCasosPrueba.Count > 0)
+                    else
                     {
-                        Console.WriteLine("\nCasos de Prueba:");
-                        foreach (var item in resumenCasosPrueba)
+                        Procesar(input);
+
+                        if (resumen.Count > 0)
                         {
-                            foreach (var subitem in item)
+                            Console.WriteLine("\nResumen de errores detectados:");
+                            foreach (var item in resumen)
                             {
-                                Console.WriteLine(subitem);
-                                if (subitem.IndexOf("error", StringComparison.InvariantCultureIgnoreCase) >= 1)
-                                {
-                                    Environment.ExitCode = 1;
-                                }
+                                Console.WriteLine(item);
                             }
                         }
+                        if (resumenCasosPrueba.Count > 0)
+                        {
+                            Console.WriteLine("\nCasos de Prueba:");
+                            foreach (var item in resumenCasosPrueba)
+                            {
+                                foreach (var subitem in item)
+                                {
+                                    Console.WriteLine(subitem);
+                                    if (subitem.IndexOf("error", StringComparison.InvariantCultureIgnoreCase) >= 1)
+                                    {
+                                        Environment.ExitCode = 1;
+                                    }
+                                }
+                            }
 
+                        }
                     }
                 }
 

@@ -11,6 +11,10 @@ namespace Pollux
     {
         public Parameters(string[] args)
         {
+            //Init
+            Init = Exist(args, "Init");
+
+            //Workspace
             Workspace = Parse(args, "/Workspace:");
             if (string.IsNullOrWhiteSpace(Workspace))
             {
@@ -45,6 +49,7 @@ namespace Pollux
             }
         }
 
+        public bool Init { get; set; }
         public string Workspace { get; set; }
         public List<ProcessFile> ProcessFiles { get; set; }
 
@@ -64,11 +69,22 @@ namespace Pollux
                     valor = valor.Replace(nombreParametro, "").ToUpper();
                 }
             }
-            catch (Exception ex)
+            catch
             {
-                //Console.WriteLine("Error al ejecutar la consola: {0}", ex);
             }
             return valor;
+        }
+
+        private bool Exist(string[] args, string nombreParametro)
+        {
+            try
+            {
+                return args.Any(x => x.Equals(nombreParametro,StringComparison.InvariantCultureIgnoreCase));
+            }
+            catch
+            {
+            }
+            return false;
         }
 
     }

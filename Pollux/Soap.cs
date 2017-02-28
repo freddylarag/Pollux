@@ -185,27 +185,7 @@ namespace Pollux
 
             return mensaje;
         }
-
-
-        //X509Certificate2 certificate = new X509Certificate2(requestDto.CertificatePath, requestDto.CertificatePassword);
-        //Initialize HttpWebRequest.
-        //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-        //HttpWebRequest request = (HttpWebRequest)WebRequest.Create("https://apigateway.qa.bnymellon.com/download-investor-documents/v2/document-folders");
-        //request.ClientCertificates.Add(certificate);
-        //request.UserAgent = requestDto.UserAgent;
-        //request.Headers.Add("Content-Type", "application/json");
-        //request.Headers.Add("Authorization", "Bearer a973e0c7e4de593b2e8d3749f180343c");
-        //    request.Method = "GET";
-        //    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-        //Stream receiveStream = response.GetResponseStream();
-
-        //StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8);
-
-        //Console.WriteLine("Response stream received.");
-        //    Console.WriteLine(readStream.ReadToEnd());
-        //    response.Close();
-        //    readStream.Close();
+        
         private static string HttpCall(string[] xml, Config config)
         {
             string content = string.Empty;
@@ -220,7 +200,7 @@ namespace Pollux
 
             //WebRequest.DefaultWebProxy.Credentials = CredentialCache.DefaultNetworkCredentials;
             WebRequestHandler webRequestHandler = new WebRequestHandler();
-            webRequestHandler.Proxy = new WebProxy("http://mataquito.ing.cl:8080",true,new string[] { },new NetworkCredential("flarag","Paulette.02"));// new PolluxProxy("http://mataquito.ing.cl",8080,"flarag","Paulette.02");
+            //webRequestHandler.Proxy = new WebProxy("http://mataquito.ing.cl:8080",true,new string[] { },new NetworkCredential("flarag","Paulette.02"));// new PolluxProxy("http://mataquito.ing.cl",8080,"flarag","Paulette.02");
             webRequestHandler.UseProxy = true;
             //webRequestHandler.ClientCertificates.Add(new X509Certificate2(@"E:\Documentos\Respaldo Gonzalo\Pershing\Fase 1\keystore\Qa\pershing.pem"));
             
