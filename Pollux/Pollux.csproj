@@ -149,6 +149,7 @@
     <Compile Include="FileXml.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Publish.cs" />
+    <Compile Include="Rest.cs" />
     <Compile Include="Summary.cs" />
     <Compile Include="Validation.cs" />
     <Compile Include="Xml.cs" />
@@ -160,9 +161,6 @@
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -51,9 +51,10 @@ namespace Pollux
             try
             {
                 Console.WriteLine("\n");
-                Console.WriteLine("====================================================================");
-                Console.WriteLine("                 Pollux v0.3     10/02/2017                    ");
-                Console.WriteLine("====================================================================");
+                Console.WriteLine("============================================================");
+                Console.WriteLine("                 Pollux v0.4     28/02/2017                 ");
+                Console.WriteLine("Automatización de casos de prueba para servicios SOAP y REST");
+                Console.WriteLine("============================================================");
                 Console.WriteLine();
 
                 var input = new Parameters(args);

@@ -12,7 +12,7 @@ using System.Xml.Linq;
 
 namespace Pollux
 {
-    public static class Soap
+    public static class Rest
     {
         private static bool ValidateResponse(string responde, List<Validation> validations){
             try
@@ -37,7 +37,7 @@ namespace Pollux
                 }
             }
             catch(Exception){
-                Console.WriteLine("La regla de validación no es correcta.");
+                Console.WriteLine("La regla de validacion no es correcta.");
             }
 
             return !validations.Any(x=> x.Status==false);
