@@ -52,7 +52,7 @@ namespace Pollux
             {
                 Console.WriteLine("\n");
                 Console.WriteLine("====================================================================");
-                Console.WriteLine("                   Pollux v0.4        build 28/02/2017              ");
+                Console.WriteLine("                   Pollux v0.5        build 09/03/2017              ");
                 Console.WriteLine("    Automatización de casos de prueba para servicios SOAP y REST    ");
                 Console.WriteLine("====================================================================");
                 Console.WriteLine();
@@ -151,9 +151,9 @@ namespace Pollux
                 try
                 {
                     input.Workspace = System.IO.Path.GetDirectoryName(fileItem.FileTemplate);
-                    Console.WriteLine("Config:\n{0}", fileItem.FileConfig);
-                    Console.WriteLine("Xml:\n{0}", fileItem.FileTemplate);
-                    Console.WriteLine("Xls:\n{0}", fileItem.FileData);
+                    Console.WriteLine("Config:\t{0}", fileItem.FileConfig.Replace(input.Workspace,""));
+                    Console.WriteLine("Xml:\t{0}", fileItem.FileTemplate.Replace(input.Workspace, ""));
+                    Console.WriteLine("Xls:\t{0}", fileItem.FileData.Replace(input.Workspace, ""));
 
                     //Config
                     Console.WriteLine("\nSOAP");
@@ -190,7 +190,7 @@ namespace Pollux
                     else
                     {
                         Console.WriteLine("\nCampos detectatos en XML: {0}", fileItem.Xml.Fields.Count);
-                        if (fileItem.Xml.Fields.Count == 0)
+                        if (fileItem.Xml.Fields.Count > 0)
                         {
                             foreach (var item in fileItem.Xml.Fields)
                             {

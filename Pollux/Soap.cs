@@ -14,9 +14,25 @@ namespace Pollux
 {
     public static class Soap
     {
+        #region Validaciones
         private static bool ValidateResponse(string responde, List<Validation> validations){
+            XDocument xml=null;
             try
             {
+                xml = XDocument.Parse(responde);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("La respuesta del servicio no se reconoce como un XML válido.\n{0}", ex.Message);
+            }
+
+            try
+            {
+                if (xml == null)
+                {
+                    return false;
+                }
+
                 if (validations == null || validations.Count==0)
                 {
                     return true;
@@ -28,22 +44,28 @@ namespace Pollux
                         item.Status = false;
                     }
 
-                    XDocument xml = XDocument.Parse(responde);
                     foreach (var validationsItem in validations)
                     {
-                        string value=ExtractValue(xml,validationsItem.Tag);
+                        var value=ExtractValue(xml,validationsItem.Tag);
                         ValidationState(value, validationsItem);
                     }
                 }
             }
-            catch(Exception){
-                Console.WriteLine("La regla de validación no es correcta.");
+            catch(Exception ex){
+                Console.WriteLine("La regla de validación no es correcta.\n{0}",ex.Message);
             }
 
             return !validations.Any(x=> x.Status==false);
         }
 
-        private static string ExtractValue(XDocument xml, string tag)
+        public class ValidationValue
+        {
+            public string Tag { get; set; }
+            public bool IsExist { get; set; }
+            public string Value { get; set; }
+        }
+
+        private static ValidationValue ExtractValue(XDocument xml, string tag)
         {
             IEnumerable<XElement> node = null;
             if (xml != null && !string.IsNullOrWhiteSpace(tag))
@@ -77,27 +99,36 @@ namespace Pollux
 
                 if (node != null && node.Count() > 0)
                 {
-                    return node.FirstOrDefault().Value;
+                    return new ValidationValue
+                    {
+                        Tag = tag,
+                        IsExist = true,
+                        Value = node.FirstOrDefault().Value,
+                    };
                 }
             }
 
-            return null;
+            return new ValidationValue();
         }
 
-        private static void ValidationState(string valor, Validation validationsItem)
+        private static void ValidationState(ValidationValue valor, Validation validationsItem)
         {
-            if (valor != null)
+            if (valor != null && !valor.IsExist)
+            {
+                validationsItem.Status = true;
+            }
+            else if(valor != null)
             {
                 if (validationsItem.Operation == ValidationOperation.Equals)
                 {
                     if (validationsItem.Value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        if(string.IsNullOrEmpty(valor))
+                        if(string.IsNullOrEmpty(valor.Value))
                         {
                             validationsItem.Status = true;
                         }
                     }
-                    else if (validationsItem.Value.Equals(valor, StringComparison.InvariantCultureIgnoreCase))
+                    else if (validationsItem.Value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
                     {
                         validationsItem.Status = true;
                     }
@@ -106,12 +137,12 @@ namespace Pollux
                 {
                     if (validationsItem.Value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
                     {
-                        if(!string.IsNullOrEmpty(valor))
+                        if(!string.IsNullOrEmpty(valor.Value))
                         {
                             validationsItem.Status = true;
                         }
                     }
-                    else if (!validationsItem.Value.Equals(valor, StringComparison.InvariantCultureIgnoreCase))
+                    else if (!validationsItem.Value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
                     {
                         validationsItem.Status = true;
                     }
@@ -120,7 +151,7 @@ namespace Pollux
                 {
                     double numeric1 = 0;
                     double numeric2 = 0;
-                    if (double.TryParse(valor, out numeric1) && double.TryParse(validationsItem.Value, out numeric2))
+                    if (double.TryParse(valor.Value, out numeric1) && double.TryParse(validationsItem.Value, out numeric2))
                     {
                         if (numeric1 > numeric2)
                         {
@@ -132,7 +163,7 @@ namespace Pollux
                 {
                     double numeric1 = 0;
                     double numeric2 = 0;
-                    if (double.TryParse(valor, out numeric1) && double.TryParse(validationsItem.Value, out numeric2))
+                    if (double.TryParse(valor.Value, out numeric1) && double.TryParse(validationsItem.Value, out numeric2))
                     {
                         if (numeric1 < numeric2)
                         {
@@ -142,6 +173,8 @@ namespace Pollux
                 }
             }        
         }
+
+        #endregion
 
         public static string[] Start(string path, ProcessFile processFile)
         {
@@ -194,17 +227,7 @@ namespace Pollux
                 content += item + "\n";
             }
 
-
-            //var byteArray = Encoding.ASCII.GetBytes("username:password1234");
-            //client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Basic", Convert.ToBase64String(byteArray));
-
-            //WebRequest.DefaultWebProxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-            WebRequestHandler webRequestHandler = new WebRequestHandler();
-            //webRequestHandler.Proxy = new WebProxy("http://mataquito.ing.cl:8080",true,new string[] { },new NetworkCredential("flarag","Paulette.02"));// new PolluxProxy("http://mataquito.ing.cl",8080,"flarag","Paulette.02");
-            webRequestHandler.UseProxy = true;
-            //webRequestHandler.ClientCertificates.Add(new X509Certificate2(@"E:\Documentos\Respaldo Gonzalo\Pershing\Fase 1\keystore\Qa\pershing.pem"));
-            
-            System.Net.Http.HttpClient http = new System.Net.Http.HttpClient(webRequestHandler);            
+            System.Net.Http.HttpClient http = new System.Net.Http.HttpClient();            
             foreach (var item in config.Headers)
             {
                 if (!item.Key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase))
@@ -215,19 +238,9 @@ namespace Pollux
                     }
                 }
             }
-            var requestContent = new StringContent(content, System.Text.Encoding.UTF8, config.Headers["Content-Type"]);
-            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, config.Url);
-
-            //.ContinueWith(responseTask =>
-            //{
-            //    Console.WriteLine("Response: {0}", responseTask.Result);
-            //});
-
-            ////var response = http.GetAsync(config.Url).Result;
-            ////string responText = response.Content.ReadAsStringAsync().Result;
-            //string cc = http.SendAsync(request).Result.Content.ReadAsStringAsync().Result;
-            string cc = http.GetAsync(config.Url).Result.Content.ReadAsStringAsync().Result;
-            return cc;
+            var response = http.PostAsync(config.Url, new StringContent(content, System.Text.Encoding.UTF8, "application/xml")).Result;
+            string responText = response.Content.ReadAsStringAsync().Result;
+            return responText;
         }
 
         //private static string HttpCall(string[] xml, Config config)
@@ -308,9 +321,17 @@ namespace Pollux
                 System.IO.Directory.CreateDirectory(outputPath);
             }
 
-            XDocument xDoc=XDocument.Parse(xml);
-            string filepath=System.IO.Path.Combine(outputPath, string.Format("{0}_{1}.xml", iteracion, sufijo));
-            xDoc.Save(filepath);
+            string filepath = string.Empty;
+            try
+            {
+                filepath = System.IO.Path.Combine(outputPath, string.Format("{0}_{1}.xml", iteracion, sufijo));
+                XDocument xDoc = XDocument.Parse(xml);
+                xDoc.Save(filepath);
+            }catch(Exception ex)
+            {
+                filepath = System.IO.Path.Combine(outputPath, string.Format("{0}_{1}.txt", iteracion, sufijo));
+                System.IO.File.WriteAllText(filepath, xml);
+            }
             return filepath;
         }
     }
