@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:tem="http://tempuri.org/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <tem:ObtenerProducto>
+         <!--Optional:-->
+         <tem:sku>[[codigo]]</tem:sku>
+      </tem:ObtenerProducto>
+   </soapenv:Body>
+</soapenv:Envelope>

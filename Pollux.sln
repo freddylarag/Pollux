@@ -5,6 +5,28 @@ VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pollux", "Pollux\Pollux.csproj", "{39A7026F-C2AC-4779-940F-1DE8F7E10C2D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{0A2D3842-9AE8-4320-A0A2-7F69512A53E4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebServicesTest", "Test\WebServicesTest\WebServicesTest.csproj", "{B5C47BA4-EC14-4883-9223-9981F0774A03}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "TemplatesTest", "TemplatesTest", "{46A6D074-21AC-4FD1-A9EC-33AF01F62F2B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebService1Test", "WebService1Test", "{DE0C4881-F9C9-44DA-8F79-56F13082B5AF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObtenerProducto", "ObtenerProducto", "{A620EC6D-1666-4E23-8CA7-AB611A11BD55}"
+	ProjectSection(SolutionItems) = preProject
+		Test\TemplatesTest\WebService1Test\ObtenerProducto\ObtenerProducto.config = Test\TemplatesTest\WebService1Test\ObtenerProducto\ObtenerProducto.config
+		Test\TemplatesTest\WebService1Test\ObtenerProducto\ObtenerProducto.xlsx = Test\TemplatesTest\WebService1Test\ObtenerProducto\ObtenerProducto.xlsx
+		Test\TemplatesTest\WebService1Test\ObtenerProducto\ObtenerProducto.xml = Test\TemplatesTest\WebService1Test\ObtenerProducto\ObtenerProducto.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObtenerProductos", "ObtenerProductos", "{2F7FBA53-49AA-45C4-8CE3-5EC41821B362}"
+	ProjectSection(SolutionItems) = preProject
+		Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.config = Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.config
+		Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.xlsx = Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.xlsx
+		Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.xml = Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.xml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -36,9 +58,34 @@ Global
 		{39A7026F-C2AC-4779-940F-1DE8F7E10C2D}.x64|x64.Build.0 = x64|x64
 		{39A7026F-C2AC-4779-940F-1DE8F7E10C2D}.x64|x86.ActiveCfg = x64|x86
 		{39A7026F-C2AC-4779-940F-1DE8F7E10C2D}.x64|x86.Build.0 = x64|x86
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Debug|x64.Build.0 = Debug|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Debug|x86.Build.0 = Debug|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Release|x64.ActiveCfg = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Release|x64.Build.0 = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Release|x86.ActiveCfg = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.Release|x86.Build.0 = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|Any CPU.ActiveCfg = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|Any CPU.Build.0 = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|x64.ActiveCfg = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|x64.Build.0 = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|x86.ActiveCfg = Release|Any CPU
+		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B5C47BA4-EC14-4883-9223-9981F0774A03} = {0A2D3842-9AE8-4320-A0A2-7F69512A53E4}
+		{46A6D074-21AC-4FD1-A9EC-33AF01F62F2B} = {0A2D3842-9AE8-4320-A0A2-7F69512A53E4}
+		{DE0C4881-F9C9-44DA-8F79-56F13082B5AF} = {46A6D074-21AC-4FD1-A9EC-33AF01F62F2B}
+		{A620EC6D-1666-4E23-8CA7-AB611A11BD55} = {DE0C4881-F9C9-44DA-8F79-56F13082B5AF}
+		{2F7FBA53-49AA-45C4-8CE3-5EC41821B362} = {DE0C4881-F9C9-44DA-8F79-56F13082B5AF}
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True

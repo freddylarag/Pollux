@@ -227,7 +227,11 @@ namespace Pollux
                 content += item + "\n";
             }
 
-            System.Net.Http.HttpClient http = new System.Net.Http.HttpClient();            
+            HttpClientHandler handler = new HttpClientHandler()
+            {
+                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
+            };
+            System.Net.Http.HttpClient http = new System.Net.Http.HttpClient(handler);            
             foreach (var item in config.Headers)
             {
                 if (!item.Key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase))
@@ -238,7 +242,10 @@ namespace Pollux
                     }
                 }
             }
-            var response = http.PostAsync(config.Url, new StringContent(content, System.Text.Encoding.UTF8, "application/xml")).Result;
+            http.DefaultRequestHeaders.Add("User-Agent",Program.ApplicationName);
+
+            var response = http.PostAsync(config.Url, new StringContent(content, System.Text.Encoding.UTF8, config.Headers["Content-Type"])).Result;
+            response.EnsureSuccessStatusCode();
             string responText = response.Content.ReadAsStringAsync().Result;
             return responText;
         }
@@ -278,28 +285,6 @@ namespace Pollux
         //    string responText = response.Content.ReadAsStringAsync().Result;
         //    return responText;
         //}
-
-
-        private async static Task<string> HttpCallAsync(Uri url, string[] xml, Dictionary<string, string> headers)
-        {
-            string request = string.Empty;
-            foreach (var item in xml)
-            {
-                request += item + "\n";
-            }
-
-            System.Net.Http.HttpClient http = new System.Net.Http.HttpClient();
-            if (headers != null)
-            {
-                foreach (var item in headers)
-                {
-                    http.DefaultRequestHeaders.Add(item.Key, item.Value);
-                }
-            }
-            var response = await http.PostAsync(url, new StringContent(request, System.Text.Encoding.UTF8, "application/xml"));
-            string responText = await response.Content.ReadAsStringAsync();
-            return responText;
-        }
 
         private static string WriteXml(string iteracion, string path, string[] xml, string fechaEjecucion, string prefijo, string sufijo)
         {

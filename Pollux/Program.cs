@@ -16,6 +16,7 @@ namespace Pollux
         static string  workspace=string.Empty;
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
+        public static string ApplicationName="Pollux v0.6 Beta";
 
         static void Main(string[] args)
         {
@@ -52,7 +53,7 @@ namespace Pollux
             {
                 Console.WriteLine("\n");
                 Console.WriteLine("====================================================================");
-                Console.WriteLine("                   Pollux v0.5        build 09/03/2017              ");
+                Console.WriteLine("                   {0}        build 09/03/2017              ",ApplicationName);
                 Console.WriteLine("    Automatización de casos de prueba para servicios SOAP y REST    ");
                 Console.WriteLine("====================================================================");
                 Console.WriteLine();
