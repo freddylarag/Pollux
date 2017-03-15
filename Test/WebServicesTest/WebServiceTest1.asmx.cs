@@ -43,11 +43,11 @@ namespace WebServicesTest
                  new Producto
                     {
                         Nombre = "Cuaderno Matematicas 100 Hojas",
-                        Categoria = 67,
-                        Precio = 910,
+                        Categoria = 70,
+                        Precio = 1200,
                         ProductoID = Guid.Parse("625ff30e-4392-4af5-b119-1a2c59940e8d"),
                         SKU = "HJ5KS9876234DD340",
-                        Stock = 360,
+                        Stock = 200,
                     },
                  new Producto
                     {
@@ -60,12 +60,12 @@ namespace WebServicesTest
                     },
                  new Producto
                     {
-                        Nombre = "Cuaderno Matematicas 100 Hojas",
-                        Categoria = 67,
-                        Precio = 910,
+                        Nombre = "Cuaderno Matematicas 150 Hojas",
+                        Categoria = 70,
+                        Precio = 1500,
                         ProductoID = Guid.Parse("c973dd5d-bef4-4894-982d-2ea62a5708cc"),
                         SKU = "HJ5KS9876234DD342",
-                        Stock = 360,
+                        Stock = 500,
                     },
             };
 

@@ -151,12 +151,13 @@ namespace Pollux
                     {
                         foreach (var item in validaciones)
                         {
-                            Validations.Add(new Validation
+                            var validacion=new Validation()
                             {
                                 Tag = item.Element("Tag")?.Value,
                                 Operation = (ValidationOperation)Enum.Parse(typeof(ValidationOperation), item.Element("Operation")?.Value, true),
-                                Value = item.Element("Value")?.Value,
-                            });
+                            };
+                            item.Elements("Value")?.ToList()?.ForEach(x=> validacion?.Values.Add(x?.Value));
+                            Validations.Add(validacion);
                         }
                     }
                 }

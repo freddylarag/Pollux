@@ -9,8 +9,13 @@ namespace Pollux
     {
         public string Tag { get; set; }
         public ValidationOperation Operation { get; set; }
-        public string Value { get; set; }
+        public List<string> Values { get; set; }
         public bool Status { get; set; }
+
+        public Validation()
+        {
+            Values = new List<string>();
+        }
     }
 
     public enum ValidationOperation

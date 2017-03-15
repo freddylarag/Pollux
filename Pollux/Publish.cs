@@ -302,7 +302,19 @@ namespace Pollux
             foreach (var item in process.Config.Validations)
             {
                 html.Add("  <tr>");
-                html.Add(string.Format("      <td>{0}</td><td>{1}</td><td>{2}</td>", item.Tag,item.Operation,item.Value));
+                if (item.Values.Count == 1)
+                {
+                    html.Add(string.Format("      <td>{0}</td><td>{1}</td><td>{2}</td>", item.Tag, item.Operation, item.Values));
+                }else
+                {
+                    var values=string.Format("      <td>{0}</td><td>{1}</td><td>", item.Tag, item.Operation);
+                    foreach (var itemValue in item.Values)
+                    {
+                        values= values + itemValue + "<br/>";
+                    }
+                    values = values + "</td>";
+                    html.Add(values);
+                }
                 html.Add("  </tr>");
             }
             html.Add("</table>");

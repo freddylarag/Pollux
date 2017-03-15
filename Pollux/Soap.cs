@@ -84,7 +84,7 @@ namespace Pollux
                     }
                     else if (node.Count() > 0)
                     {
-                        string xmlns = node.FirstOrDefault().Descendants().FirstOrDefault().Name.NamespaceName;
+                        string xmlns = node?.FirstOrDefault()?.Descendants()?.FirstOrDefault()?.Name?.NamespaceName;
                         if (!string.IsNullOrWhiteSpace(xmlns))
                         {
                             xmlns = "{" + xmlns + "}";
@@ -103,71 +103,79 @@ namespace Pollux
                     {
                         Tag = tag,
                         IsExist = true,
-                        Value = node.FirstOrDefault().Value,
+                        Value = node?.FirstOrDefault()?.Value,
                     };
                 }
             }
 
-            return new ValidationValue();
+            return new ValidationValue
+            {
+                Tag = tag,
+                IsExist = false,
+                Value = null,
+            };
         }
 
         private static void ValidationState(ValidationValue valor, Validation validationsItem)
         {
             if (valor != null && !valor.IsExist)
             {
-                validationsItem.Status = true;
+                validationsItem.Status = false;
             }
             else if(valor != null)
             {
-                if (validationsItem.Operation == ValidationOperation.Equals)
+                foreach (var value in validationsItem.Values)
                 {
-                    if (validationsItem.Value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
+                    if (validationsItem.Operation == ValidationOperation.Equals)
                     {
-                        if(string.IsNullOrEmpty(valor.Value))
+                        if (value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            if (string.IsNullOrEmpty(valor.Value))
+                            {
+                                validationsItem.Status = true;
+                            }
+                        }
+                        else if (value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
                         {
                             validationsItem.Status = true;
                         }
                     }
-                    else if (validationsItem.Value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
+                    else if (validationsItem.Operation == ValidationOperation.NotEquals)
                     {
-                        validationsItem.Status = true;
-                    }
-                }
-                else if (validationsItem.Operation == ValidationOperation.NotEquals)
-                {
-                    if (validationsItem.Value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
-                    {
-                        if(!string.IsNullOrEmpty(valor.Value))
+                        if (value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
+                        {
+                            if (!string.IsNullOrEmpty(valor.Value))
+                            {
+                                validationsItem.Status = true;
+                            }
+                        }
+                        else if (!value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
                         {
                             validationsItem.Status = true;
                         }
                     }
-                    else if (!validationsItem.Value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
+                    else if (validationsItem.Operation == ValidationOperation.Major)
                     {
-                        validationsItem.Status = true;
-                    }
-                }
-                else if (validationsItem.Operation == ValidationOperation.Major)
-                {
-                    double numeric1 = 0;
-                    double numeric2 = 0;
-                    if (double.TryParse(valor.Value, out numeric1) && double.TryParse(validationsItem.Value, out numeric2))
-                    {
-                        if (numeric1 > numeric2)
+                        double numeric1 = 0;
+                        double numeric2 = 0;
+                        if (double.TryParse(valor.Value, out numeric1) && double.TryParse(value, out numeric2))
                         {
-                            validationsItem.Status = true;
+                            if (numeric1 > numeric2)
+                            {
+                                validationsItem.Status = true;
+                            }
                         }
                     }
-                }
-                else if (validationsItem.Operation == ValidationOperation.Minor)
-                {
-                    double numeric1 = 0;
-                    double numeric2 = 0;
-                    if (double.TryParse(valor.Value, out numeric1) && double.TryParse(validationsItem.Value, out numeric2))
+                    else if (validationsItem.Operation == ValidationOperation.Minor)
                     {
-                        if (numeric1 < numeric2)
+                        double numeric1 = 0;
+                        double numeric2 = 0;
+                        if (double.TryParse(valor.Value, out numeric1) && double.TryParse(value, out numeric2))
                         {
-                            validationsItem.Status = true;
+                            if (numeric1 < numeric2)
+                            {
+                                validationsItem.Status = true;
+                            }
                         }
                     }
                 }
