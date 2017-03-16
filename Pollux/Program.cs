@@ -16,8 +16,8 @@ namespace Pollux
         static string  workspace=string.Empty;
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
-        public static string ApplicationName = "Pollux v0.7 Beta";
-        public static string ApplicationBuild = "build 14/03/2017";
+        public static string ApplicationName = "Pollux v0.8 Beta";
+        public static string ApplicationBuild = "build 15/03/2017";
 
         static void Main(string[] args)
         {

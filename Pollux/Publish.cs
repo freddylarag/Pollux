@@ -395,6 +395,17 @@ namespace Pollux
 
             //TimeOut
             html.Add("<tr>");
+            html.Add(string.Format("<td></td><td style=\"text-align: center\">StatusCode</td>"));
+            foreach (var item in process.Excel.RequestXml)
+            {
+                html.Add("<td>");
+                html.Add(string.Format("{0} ({1})", item.Response.StatusCode, (int)item.Response.StatusCode));
+                html.Add("</td>");
+            }
+            html.Add("</tr>");
+
+            //TimeOut
+            html.Add("<tr>");
             html.Add(string.Format("<td></td><td style=\"text-align: center\">TimeOut</td>"));
             foreach (var item in process.Excel.RequestXml)
             {

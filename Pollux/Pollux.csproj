@@ -149,6 +149,7 @@
     <Compile Include="FileXml.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Publish.cs" />
+    <Compile Include="Response.cs" />
     <Compile Include="Rest.cs" />
     <Compile Include="Summary.cs" />
     <Compile Include="Validation.cs" />

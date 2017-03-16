@@ -1,4 +1,5 @@
 ﻿using LinqToExcel;
+using SoapTest;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -205,21 +206,21 @@ namespace Pollux
             xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, fechaEjecucion, processFile.Name, "Request");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            xmlRequest.Response = new FileXml(HttpCall(xmlRequest.Request.ContentArray, processFile.Config));
+            xmlRequest.Response = HttpCall(xmlRequest.Request.ContentArray, processFile.Config);
             watch.Stop();
 
-            xmlRequest.IsCorrect = ValidateResponse(xmlRequest.Response.ContentString, processFile.Config.Validations);
+            xmlRequest.IsCorrect = ValidateResponse(xmlRequest.Response.Content, processFile.Config.Validations);
             xmlRequest.TimeOut = watch.Elapsed;
 
             if (xmlRequest.IsCorrect)
             {
-                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.ContentString, fechaEjecucion, processFile.Name, "Response_Ok");
+                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.Name, "Response_Ok");
                 mensaje = string.Format("Caso {0} procesado\tOk\tTimeout: {1}", i, watch.Elapsed);
                 Console.WriteLine(mensaje);
             }
             else
             {
-                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.ContentString, fechaEjecucion, processFile.Name, "Response_Error");
+                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.Name, "Response_Error");
                 mensaje = string.Format("Caso {0} procesado\tError\tTimeout: {1}", i, watch.Elapsed);
                 Console.WriteLine(mensaje);
             }
@@ -227,7 +228,7 @@ namespace Pollux
             return mensaje;
         }
         
-        private static string HttpCall(string[] xml, Config config)
+        private static Response HttpCall(string[] xml, Config config)
         {
             string content = string.Empty;
             foreach (var item in xml)
@@ -253,9 +254,11 @@ namespace Pollux
             http.DefaultRequestHeaders.Add("User-Agent",Program.ApplicationName);
 
             var response = http.PostAsync(config.Url, new StringContent(content, System.Text.Encoding.UTF8, config.Headers["Content-Type"])).Result;
-            response.EnsureSuccessStatusCode();
-            string responText = response.Content.ReadAsStringAsync().Result;
-            return responText;
+            return new Response {
+                Content = response.Content.ReadAsStringAsync().Result,
+                StatusCode = response.StatusCode,
+                IsSuccessStatusCode = response.IsSuccessStatusCode,
+            };
         }
 
         //private static string HttpCall(string[] xml, Config config)

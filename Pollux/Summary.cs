@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SoapTest;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -13,13 +14,13 @@ namespace Pollux
             Parameters = new List<string>();
             Template = new FileXml("");
             Request = new FileXml("");
-            Response = new FileXml("");
+            Response = new Response();
         }
 
         public List<string> Parameters { get; set; }
         public FileXml Template { get; set; }
         public FileXml Request { get; set; }
-        public FileXml Response { get; set; }
+        public Response Response { get; set; }
         public TimeSpan TimeOut { get; set; }
         public bool IsCorrect { get; set; }
         public string Status {
