@@ -1,13 +1,6 @@
-﻿using LinqToExcel;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Pollux
 {
@@ -16,13 +9,13 @@ namespace Pollux
         static string  workspace=string.Empty;
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
-        public static string ApplicationName = "Pollux v0.8 Beta";
-        public static string ApplicationBuild = "build 15/03/2017";
+        public static string ApplicationName = "Pollux v0.9 Beta";
+        public static string ApplicationBuild = "build 16/03/2017";
 
         static void Main(string[] args)
         {
             //    WebRequestHandler webRequestHandler = new WebRequestHandler();
-            //    webRequestHandler.Proxy = new WebProxy("http://mataquito.ing.cl:8080", true, new string[] { }, new NetworkCredential("flarag", "Paulette.02"));// new PolluxProxy("http://mataquito.ing.cl",8080,"flarag","Paulette.02");
+            //    webRequestHandler.Proxy = new WebProxy("http://mataquito.cl:8080", true, new string[] { }, new NetworkCredential("flarag", "Paulette.02"));// new PolluxProxy("http://mataquito.cl",8080,"flarag","Paulette.02");
             //    webRequestHandler.UseProxy = true;
             //    //webRequestHandler.ClientCertificates.Add(new X509Certificate2(@"E:\Documentos\Respaldo Gonzalo\Pershing\Fase 1\keystore\Qa\pershing.pem"));
 
@@ -210,8 +203,9 @@ namespace Pollux
 
                     //Procesar
                     Console.WriteLine("\nEjecución de Casos de Prueba:");
-                    resumenCasosPrueba.Add(Soap.Start(input.Workspace, fileItem));
-                    Publish.Save(input.Workspace, fileItem);
+                    string fechaEjecucion = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    resumenCasosPrueba.Add(Soap.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.Name}_{fechaEjecucion}"), fileItem));
+                    Publish.Save(Path.Combine(input.Workspace, "Reports", $"{fileItem.Name}_{fechaEjecucion}"), fileItem);
                 }
                 catch (Exception ex)
                 {

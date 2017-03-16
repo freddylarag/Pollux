@@ -202,7 +202,7 @@ namespace Pollux
             html.Add("      </div>");
             html.Add("  </body>");
             html.Add("</html>");
-            File.WriteAllLines(Path.Combine(path, process.Name+".html"), html.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(Path.Combine(path, "Index.html"), html.ToArray(), Encoding.UTF8);
 
             Info(path, process,Pagina.Info);
             PruebasBorde(path, process,Pagina.CasosBorde);
@@ -223,9 +223,9 @@ namespace Pollux
             List<string> html = new List<string>();
 
             html.Add("      <ul>");
-            html.Add(string.Format("          <li><a {1} href=\"{0}\">Casos de Negocio</a></li>", process.Name + ".html", pagina==Pagina.CasosNegocio ? "class=\"active\"" : ""));
-            html.Add(string.Format("          <li><a {1} href=\"{0}\">Casos de Borde</a></li>", process.Name + "_borde.html", pagina == Pagina.CasosBorde ? "class=\"active\"" : ""));
-            html.Add(string.Format("          <li><a {1} href=\"{0}\">Información de Servicio</a></li>", process.Name + "_info.html", pagina == Pagina.Info ? "class=\"active\"" : ""));
+            html.Add(string.Format("          <li><a {1} href=\"{0}\">Casos de Negocio</a></li>", "Index.html", pagina==Pagina.CasosNegocio ? "class=\"active\"" : ""));
+            html.Add(string.Format("          <li><a {1} href=\"{0}\">Casos de Borde</a></li>", "SpecialTests.html", pagina == Pagina.CasosBorde ? "class=\"active\"" : ""));
+            html.Add(string.Format("          <li><a {1} href=\"{0}\">Información de Servicio</a></li>", "Info.html", pagina == Pagina.Info ? "class=\"active\"" : ""));
             html.Add("          <li style=\"float:right\"><a href=\"#\">Acerca de Pollux</a></li>");
             html.Add("      </ul>");
 
@@ -250,8 +250,9 @@ namespace Pollux
             html.Add("  </body>");
             html.Add("</html>");
 
-            File.WriteAllLines(Path.Combine(path, process.Name + "_borde.html"), html.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(Path.Combine(path, "SpecialTests.html"), html.ToArray(), Encoding.UTF8);
         }
+
         private static void Info(string path, ProcessFile process, Pagina pagina)
         {
             List<string> html = new List<string>();
@@ -323,7 +324,7 @@ namespace Pollux
             html.Add("  </body>");
             html.Add("</html>");
 
-            File.WriteAllLines(Path.Combine(path, process.Name + "_info.html"), html.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(Path.Combine(path, "Info.html"), html.ToArray(), Encoding.UTF8);
         }
 
         private static List<string> Body(ProcessFile process, string path)

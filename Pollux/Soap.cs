@@ -192,7 +192,7 @@ namespace Pollux
 
             foreach (var xmlRequest in processFile.Excel.RequestXml)
             {
-                Notify(i, xmlRequest, processFile, path);
+                Notify(i, xmlRequest, processFile,System.IO.Path.Combine(path, "Results"));
                 i++;
             }
 
@@ -201,9 +201,8 @@ namespace Pollux
 
         private static string Notify(int i,Summary xmlRequest, ProcessFile processFile, string path)
         {
-            string fechaEjecucion = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string mensaje = string.Empty;
-            xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, fechaEjecucion, processFile.Name, "Request");
+            xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, "Request");
             Stopwatch watch = new Stopwatch();
             watch.Start();
             xmlRequest.Response = HttpCall(xmlRequest.Request.ContentArray, processFile.Config);
@@ -214,13 +213,13 @@ namespace Pollux
 
             if (xmlRequest.IsCorrect)
             {
-                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.Name, "Response_Ok");
+                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, "Response_Ok");
                 mensaje = string.Format("Caso {0} procesado\tOk\tTimeout: {1}", i, watch.Elapsed);
                 Console.WriteLine(mensaje);
             }
             else
             {
-                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.Name, "Response_Error");
+                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, "Response_Error");
                 mensaje = string.Format("Caso {0} procesado\tError\tTimeout: {1}", i, watch.Elapsed);
                 Console.WriteLine(mensaje);
             }
@@ -297,35 +296,33 @@ namespace Pollux
         //    return responText;
         //}
 
-        private static string WriteXml(string iteracion, string path, string[] xml, string fechaEjecucion, string prefijo, string sufijo)
+        private static string WriteXml(string iteracion, string path, string[] xml, string sufijo)
         {
-            string outputPath = System.IO.Path.Combine(path, string.Format(@"{0}_{1}", prefijo, fechaEjecucion));
-            if (!System.IO.Directory.Exists(outputPath))
+            if (!System.IO.Directory.Exists(path))
             {
-                System.IO.Directory.CreateDirectory(outputPath);
+                System.IO.Directory.CreateDirectory(path);
             }
-            string filepath=System.IO.Path.Combine(outputPath, string.Format("{0}_{1}.xml", iteracion, sufijo));
+            string filepath=System.IO.Path.Combine(path, string.Format("{0}_{1}.xml", iteracion, sufijo));
             System.IO.File.WriteAllLines(filepath, xml);
             return filepath;
         }
 
-        private static string WriteXml(string iteracion, string path, string xml, string fechaEjecucion, string prefijo, string sufijo)
+        private static string WriteXml(string iteracion, string path, string xml, string sufijo)
         {
-            string outputPath = System.IO.Path.Combine(path, string.Format(@"{0}_{1}", prefijo, fechaEjecucion));
-            if (!System.IO.Directory.Exists(outputPath))
+            if (!System.IO.Directory.Exists(path))
             {
-                System.IO.Directory.CreateDirectory(outputPath);
+                System.IO.Directory.CreateDirectory(path);
             }
 
             string filepath = string.Empty;
             try
             {
-                filepath = System.IO.Path.Combine(outputPath, string.Format("{0}_{1}.xml", iteracion, sufijo));
+                filepath = System.IO.Path.Combine(path, string.Format("{0}_{1}.xml", iteracion, sufijo));
                 XDocument xDoc = XDocument.Parse(xml);
                 xDoc.Save(filepath);
             }catch(Exception ex)
             {
-                filepath = System.IO.Path.Combine(outputPath, string.Format("{0}_{1}.txt", iteracion, sufijo));
+                filepath = System.IO.Path.Combine(path, string.Format("{0}_{1}.txt", iteracion, sufijo));
                 System.IO.File.WriteAllText(filepath, xml);
             }
             return filepath;
