@@ -9,8 +9,8 @@ namespace Pollux
         static string  workspace=string.Empty;
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
-        public static string ApplicationName = "Pollux v0.9 Beta";
-        public static string ApplicationBuild = "build 16/03/2017";
+        public static string ApplicationName = "Pollux v0.10 Beta";
+        public static string ApplicationBuild = "build 17/03/2017";
 
         static void Main(string[] args)
         {
@@ -152,7 +152,7 @@ namespace Pollux
 
                     //Config
                     Console.WriteLine("\nSOAP");
-                    fileItem.Config = new Config(fileItem.FileConfig);
+                    fileItem.Config = new Config(fileItem.FileConfig,input.Url);
                     Console.WriteLine("\tURL: {0}", fileItem.Config.Url);
                     if (fileItem.Config.Headers.Count == 0)
                     {

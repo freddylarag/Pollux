@@ -33,7 +33,7 @@ namespace Pollux
             DELETE,
         }
 
-        public Config(string path)
+        public Config(string path, string url)
         {
             try
             {
@@ -109,17 +109,22 @@ namespace Pollux
                                 .Value;
                     }
 
+
                     //Url
-                    var url = xml.Elements("Config")?
-                            .Elements("EndPoint")?
-                            .Elements("Url")?
-                            .FirstOrDefault()?
-                            .Value;
+                    if (string.IsNullOrWhiteSpace(url))
+                    {
+                        url = xml.Elements("Config")?
+                                .Elements("EndPoint")?
+                                .Elements("Url")?
+                                .FirstOrDefault()?
+                                .Value;
+                    }
                     if (string.IsNullOrWhiteSpace(url) || url.Trim() == "?")
                     {
                         throw new NullReferenceException("La variable 'Url' no se encuentra definida.");
                     }
                     Url = new Uri(url);
+
 
 
                     //encabezados

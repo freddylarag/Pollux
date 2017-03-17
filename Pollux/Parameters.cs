@@ -14,6 +14,9 @@ namespace Pollux
             //Init
             Init = Exist(args, "Init");
 
+            //Url
+            Url = Parse(args, "/Url:")?.Trim();
+
             //Workspace
             Workspace = Parse(args, "/Workspace:");
             if (string.IsNullOrWhiteSpace(Workspace))
@@ -51,6 +54,7 @@ namespace Pollux
 
         public bool Init { get; set; }
         public string Workspace { get; set; }
+        public string Url { get; set; }
         public List<ProcessFile> ProcessFiles { get; set; }
 
         private string Parse(string[] args, string nombreParametro)
@@ -66,7 +70,7 @@ namespace Pollux
                 }
                 else
                 {
-                    valor = valor.Replace(nombreParametro, "").ToUpper();
+                    valor = valor.Replace(nombreParametro, "");
                 }
             }
             catch
