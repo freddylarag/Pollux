@@ -143,25 +143,29 @@ namespace Pollux
 
         private void ProcessFiels(string fileExcel, IList<string> fielsXml)
         {
-            var excel = new ExcelQueryFactory(fileExcel);
-            var data = (from c in excel.Worksheet(0)
-                        select c).ToList();
+            using (var excel = new ExcelQueryFactory(fileExcel)) {
+                var header = (from c in excel.WorksheetNoHeader(0)
+                            select c).FirstOrDefault();
+                var data = (from c in excel.Worksheet(0)
+                            select c).ToList();
 
-            foreach (var item in data)
-            {
-                if (fielsXml.Any(x => x == item[0]))
+                foreach (var item in data)
                 {
-                    List<string> list = new List<string>();
-                    for (int i = StartColumnData; i < item.Count; i++)
+                    if (fielsXml.Any(x => x == item[0]))
                     {
-                        list.Add(item[i]);
+                        List<string> list = new List<string>();
+                        for (int i = StartColumnData; i < item.Count; i++)
+                        {
+                            if (!string.IsNullOrWhiteSpace(header[i]))
+                            {
+                                list.Add(item[i]);
+                            }
+                        }
+                        Fields.Add(item[0], list);
+                        CountFiles = list.Count;
                     }
-                    Fields.Add(item[0], list);
-                    CountFiles = list.Count;
                 }
             }
         }
-
-
     }
 }

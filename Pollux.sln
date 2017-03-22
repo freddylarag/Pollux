@@ -27,6 +27,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ObtenerProductos", "Obtener
 		Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.xml = Test\TemplatesTest\WebService1Test\ObtenerProductos\ObtenerProductos.xml
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Instalador", "Instalador", "{D06C60D0-0059-4986-BE8C-B73DE4E0811D}"
+	ProjectSection(SolutionItems) = preProject
+		Installer\Pollux Installer.nsi = Installer\Pollux Installer.nsi
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -86,6 +91,7 @@ Global
 		{DE0C4881-F9C9-44DA-8F79-56F13082B5AF} = {46A6D074-21AC-4FD1-A9EC-33AF01F62F2B}
 		{A620EC6D-1666-4E23-8CA7-AB611A11BD55} = {DE0C4881-F9C9-44DA-8F79-56F13082B5AF}
 		{2F7FBA53-49AA-45C4-8CE3-5EC41821B362} = {DE0C4881-F9C9-44DA-8F79-56F13082B5AF}
+		{D06C60D0-0059-4986-BE8C-B73DE4E0811D} = {0A2D3842-9AE8-4320-A0A2-7F69512A53E4}
 	EndGlobalSection
 	GlobalSection(SubversionScc) = preSolution
 		Svn-Managed = True
