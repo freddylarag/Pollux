@@ -64,9 +64,13 @@ namespace Pollux
                             string line = _xml[fila];
                             if (line.IndexOf(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField)) >= 0)
                             {
-                                if (string.IsNullOrWhiteSpace(row.Value[i]))
+                                if (row.Value[i].Trim().Equals("${empty}", StringComparison.InvariantCultureIgnoreCase))
                                 {
-                                    xmlRequest[fila] = "";
+                                    xmlRequest[fila] = line.Replace(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField), "");
+                                }
+                                else if (row.Value[i].Trim().Equals("${null}", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    xmlRequest[fila] = "<!--" + line.Replace(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField), "").Trim() + "-->";
                                 }
                                 else
                                 {
@@ -74,21 +78,21 @@ namespace Pollux
                                 }
                                 break;
                             }
-                            else if (_xml[fila].IndexOf(Xml.PrefixComment) >= 0)
-                            {
-                                int posStart = line.IndexOf(Xml.PrefixComment);
-                                if(posStart>=0){
-                                    int length = line.IndexOf(Xml.SuffixComment)+3-posStart;
-                                    if (length > 0)
-                                    {
-                                        line =line.Replace(line.Substring(posStart, length),"");
-                                        if (string.IsNullOrWhiteSpace(line))
-                                        {
-                                            xmlRequest[fila] = "";
-                                        }
-                                    }
-                                }
-                            }
+                            //else if (_xml[fila].IndexOf(Xml.PrefixComment) >= 0)
+                            //{
+                            //    int posStart = line.IndexOf(Xml.PrefixComment);
+                            //    if(posStart>=0){
+                            //        int length = line.IndexOf(Xml.SuffixComment)+3-posStart;
+                            //        if (length > 0)
+                            //        {
+                            //            line =line.Replace(line.Substring(posStart, length),"");
+                            //            if (string.IsNullOrWhiteSpace(line))
+                            //            {
+                            //                xmlRequest[fila] = "";
+                            //            }
+                            //        }
+                            //    }
+                            //}
                         }
                         catch (Exception ex)
                         {
@@ -158,7 +162,7 @@ namespace Pollux
                         {
                             if (!string.IsNullOrWhiteSpace(header[i]))
                             {
-                                list.Add(item[i]);
+                                list.Add((item[i]));
                             }
                         }
                         Fields.Add(item[0], list);
@@ -167,5 +171,7 @@ namespace Pollux
                 }
             }
         }
+
+
     }
 }

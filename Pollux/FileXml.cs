@@ -32,5 +32,6 @@ namespace Pollux
             ContentArray = content.Split(new string[]{"\n"},StringSplitOptions.RemoveEmptyEntries);
             ContentString = content;
         }
+
     }
 }

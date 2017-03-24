@@ -182,6 +182,34 @@ namespace Pollux
         }
         /*Fin Navigation Bar*/
 
+		.border-round{
+			text-align: left;
+			padding:16px 16px 16px 16px;
+			border:1px solid #ccc!important;
+			border-radius:16px!important;
+			color: #fff;
+		}
+		.empty{
+			padding:1px 16px 1px 16px;
+			text-align: center;
+			background-color: #ccc;
+			color: #777;
+			font-weight: bold;
+			width:70px;
+			border:1px solid #ccc!important;
+			border-radius:16px!important;
+		}		
+		.null{
+			padding:1px 16px 1px 16px;
+			text-align: center;
+			background-color: #ccc;
+			color: #fff;
+			font-weight: bold;
+			width:70px;
+			border:1px solid #ccc!important;
+			border-radius:16px!important;
+		}
+
 </style>
 ";
             return style;
@@ -362,7 +390,7 @@ namespace Pollux
                     html.Add(string.Format("<th class=\"panelInfo left\">{0}</th>", item.Key));
                     foreach (var caso in item.Value)
                     {
-                        html.Add(string.Format("<td>{0}</td>", caso));
+                        html.Add(string.Format("<td>{0}</td>", SpecialKey(caso)));
                     }
                     html.Add("</tr>");
                 }
@@ -440,6 +468,20 @@ namespace Pollux
             html.Add("</table>");
 
             return html;
+        }
+
+        private static string SpecialKey(string value)
+        {
+            if (value=="" || value.Trim().Equals("${empty}", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return "<div class=\"empty\">EMPTY</div>";
+            }
+            if (value.Trim().Equals("${null}", StringComparison.InvariantCultureIgnoreCase))
+            {
+                return "<div class=\"null\">NULL</div>";
+            }
+
+            return value;
         }
     }
 }

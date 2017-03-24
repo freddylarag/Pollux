@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Pollux"
-!define PRODUCT_VERSION "v0.11"
+!define PRODUCT_VERSION "v0.13"
 !define PRODUCT_PUBLISHER "Freddy Lara"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Pollux.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -35,7 +35,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "Pollux ${PRODUCT_VERSION}.exe"
+OutFile "Release\Pollux ${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\Pollux"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show
@@ -80,11 +80,11 @@ SectionEnd
 
 Function un.onUninstSuccess
   HideWindow
-  MessageBox MB_ICONINFORMATION|MB_OK "La desinstalación de $(^Name) finalizó satisfactoriamente."
+  MessageBox MB_ICONINFORMATION|MB_OK "La desinstalaciÃ³n de $(^Name) finalizÃ³ satisfactoriamente."
 FunctionEnd
 
 Function un.onInit
-  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "¿Está completamente seguro que desea desinstalar $(^Name) junto con todos sus componentes?" IDYES +2
+  MessageBox MB_ICONQUESTION|MB_YESNO|MB_DEFBUTTON2 "Â¿EstÃ¡ completamente seguro que desea desinstalar $(^Name) junto con todos sus componentes?" IDYES +2
   Abort
 FunctionEnd
 
