@@ -32,6 +32,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Instalador", "Instalador", 
 		Installer\Pollux Installer.nsi = Installer\Pollux Installer.nsi
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pollux.Tests", "Pollux.Tests\Pollux.Tests.csproj", "{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -81,6 +83,24 @@ Global
 		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|x64.Build.0 = Release|Any CPU
 		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|x86.ActiveCfg = Release|Any CPU
 		{B5C47BA4-EC14-4883-9223-9981F0774A03}.x64|x86.Build.0 = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Debug|x64.Build.0 = Debug|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Debug|x86.Build.0 = Debug|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Release|x64.ActiveCfg = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Release|x64.Build.0 = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Release|x86.ActiveCfg = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.Release|x86.Build.0 = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.x64|Any CPU.ActiveCfg = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.x64|Any CPU.Build.0 = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.x64|x64.ActiveCfg = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.x64|x64.Build.0 = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.x64|x86.ActiveCfg = Release|Any CPU
+		{F542E8C2-DDBD-44A3-85D4-FCE5E5B93A09}.x64|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

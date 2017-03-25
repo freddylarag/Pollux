@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/">
+  <SOAP-ENV:Header xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+    <ns4:Header xmlns="http://schemas.datacontract.org/2004/07/Forum.GestionParametriaCajaDom.Service" xmlns:ns2="http://schemas.datacontract.org/2004/07/Forum.GestionParametriaCajaDom.LogServiceWrapper" xmlns:ns3="http://schemas.datacontract.org/2004/07/Forum.GestionParametriaCajaDom.DTO" xmlns:ns4="http://fuse.forum.local/GestionParametriaCaja/">
+      <ns2:Consumidor>
+        <ns2:IdApp>1</ns2:IdApp>
+        <ns2:Usuario>1</ns2:Usuario>
+      </ns2:Consumidor>
+      <ns2:Transaccion>
+        <ns2:Canal>1</ns2:Canal>
+        <ns2:IdTransaccionNegocio>1</ns2:IdTransaccionNegocio>
+        <ns2:InternalCode>1</ns2:InternalCode>
+      </ns2:Transaccion>
+    </ns4:Header>
+  </SOAP-ENV:Header>
+  <soap:Body>
+    <ns4:ConsultarEstadosFolioCajaResponse xmlns="http://schemas.datacontract.org/2004/07/Forum.GestionParametriaCajaDom.DTO" xmlns:ns2="http://schemas.datacontract.org/2004/07/Forum.GestionParametriaCajaDom.Service" xmlns:ns3="http://schemas.datacontract.org/2004/07/Forum.GestionParametriaCajaDom.LogServiceWrapper" xmlns:ns4="http://fuse.forum.local/GestionParametriaCaja/">
+      <ns4:ListadoEstadosFolioCaja>
+        <EstadoFolioCajaDTO>
+          <DescripcionEstadoFolioCaja>Cerrada</DescripcionEstadoFolioCaja>
+          <IdentificadorEstadoFolioCaja>C</IdentificadorEstadoFolioCaja>
+        </EstadoFolioCajaDTO>
+        <EstadoFolioCajaDTO>
+          <DescripcionEstadoFolioCaja>Abierta</DescripcionEstadoFolioCaja>
+          <IdentificadorEstadoFolioCaja>A</IdentificadorEstadoFolioCaja>
+        </EstadoFolioCajaDTO>
+      </ns4:ListadoEstadosFolioCaja>
+      <ns3:ResultadoOperacion>
+        <ns3:Codigo>OEX-00</ns3:Codigo>
+        <ns3:Mensaje>La operación se ha ejecutado exitosamente</ns3:Mensaje>
+      </ns3:ResultadoOperacion>
+    </ns4:ConsultarEstadosFolioCajaResponse>
+  </soap:Body>
+</soap:Envelope>

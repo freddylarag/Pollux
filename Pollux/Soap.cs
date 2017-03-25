@@ -16,11 +16,11 @@ namespace Pollux
     public static class Soap
     {
         #region Validaciones
-        private static bool ValidateResponse(string responde, List<Validation> validations){
+        public static bool ValidateResponse(string response, List<Validation> validations){
             XDocument xml=null;
             try
             {
-                xml = XDocument.Parse(responde);
+                xml = XDocument.Parse(response);
             }
             catch (Exception ex)
             {
@@ -85,7 +85,7 @@ namespace Pollux
                     }
                     else if (node.Count() > 0)
                     {
-                        string xmlns = node?.FirstOrDefault()?.Descendants()?.FirstOrDefault()?.Name?.NamespaceName;
+                        string xmlns = IdentifyXmlns(item, node);
                         if (!string.IsNullOrWhiteSpace(xmlns))
                         {
                             xmlns = "{" + xmlns + "}";
@@ -117,6 +117,28 @@ namespace Pollux
             };
         }
 
+        private static string IdentifyXmlns(string itemTag, IEnumerable<XElement> node)
+        {
+            string xmlns = string.Empty;
+
+            foreach (var item in node)
+            {
+                var xnode=item.FirstNode;
+                while (xnode != null)
+                {
+                    xmlns = (xnode as XElement).Name.NamespaceName;
+                    var existe = node.Elements("{" + xmlns + "}" + itemTag).FirstOrDefault();
+                    if (existe!=null)
+                    {
+                        return xmlns;
+                    }
+                    xnode = item.NextNode ?? item.LastNode;
+                }
+            }
+
+            return xmlns;
+        }
+
         private static void ValidationState(ValidationValue valor, Validation validationsItem)
         {
             if (valor != null && !valor.IsExist)
@@ -125,6 +147,7 @@ namespace Pollux
             }
             else if(valor != null)
             {
+                List<bool> estadoValores = new List<bool>();
                 foreach (var value in validationsItem.Values)
                 {
                     if (validationsItem.Operation == ValidationOperation.Equals)
@@ -133,12 +156,12 @@ namespace Pollux
                         {
                             if (string.IsNullOrEmpty(valor.Value))
                             {
-                                validationsItem.Status = true;
+                                estadoValores.Add(true);
                             }
                         }
                         else if (value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            validationsItem.Status = true;
+                            estadoValores.Add(true);
                         }
                     }
                     else if (validationsItem.Operation == ValidationOperation.NotEquals)
@@ -147,12 +170,12 @@ namespace Pollux
                         {
                             if (!string.IsNullOrEmpty(valor.Value))
                             {
-                                validationsItem.Status = true;
+                                estadoValores.Add(true);
                             }
                         }
                         else if (!value.Equals(valor.Value, StringComparison.InvariantCultureIgnoreCase))
                         {
-                            validationsItem.Status = true;
+                            estadoValores.Add(true);
                         }
                     }
                     else if (validationsItem.Operation == ValidationOperation.Major)
@@ -163,7 +186,7 @@ namespace Pollux
                         {
                             if (numeric1 > numeric2)
                             {
-                                validationsItem.Status = true;
+                                estadoValores.Add(true);
                             }
                         }
                     }
@@ -175,12 +198,36 @@ namespace Pollux
                         {
                             if (numeric1 < numeric2)
                             {
-                                validationsItem.Status = true;
+                                estadoValores.Add(true);
                             }
                         }
                     }
                 }
-            }        
+
+                //rellenar lista
+                for (int i = estadoValores.Count; i < validationsItem.Values.Count(); i++)
+                {
+                    estadoValores.Add(false);
+                }
+
+                if (validationsItem.Operation == ValidationOperation.Equals)
+                {
+                    validationsItem.Status = estadoValores.Any(x => x == true);
+                }
+                else if (validationsItem.Operation == ValidationOperation.NotEquals)
+                {
+                    validationsItem.Status = !estadoValores.Any(x => x == false);
+                }
+                else if (validationsItem.Operation == ValidationOperation.Major)
+                {
+                    validationsItem.Status = !estadoValores.Any(x => x == false);
+                }
+                else if (validationsItem.Operation == ValidationOperation.Minor)
+                {
+                    validationsItem.Status = !estadoValores.Any(x => x == false);
+                }
+
+            }
         }
 
         #endregion
