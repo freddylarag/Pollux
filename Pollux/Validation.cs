@@ -5,6 +5,20 @@ using System.Text;
 
 namespace Pollux
 {
+    public class ValidationCollections
+    {
+        public List<Validation> ValidationsBody { get; set; }
+        public List<Validation> ValidationsHeader { get; set; }
+        public List<Validation> ValidationsFault { get; set; }
+
+        public ValidationCollections()
+        {
+            ValidationsBody = new List<Validation>();
+            ValidationsHeader = new List<Validation>();
+            ValidationsFault = new List<Validation>();
+        }
+    }
+
     public class Validation
     {
         public string Tag { get; set; }

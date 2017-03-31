@@ -15,6 +15,15 @@ namespace Pollux
 {
     public static class Rest
     {
+        private static bool ValidateSection(string responde, ValidationCollections validations)
+        {
+            var body = ValidateResponse(responde, validations.ValidationsBody);
+            var header = ValidateResponse(responde, validations.ValidationsHeader);
+            var fault = ValidateResponse(responde, validations.ValidationsFault);
+
+            return body && header && fault;
+        }
+
         private static bool ValidateResponse(string responde, List<Validation> validations){
             try
             {
@@ -171,7 +180,7 @@ namespace Pollux
             xmlRequest.Response = HttpCall(xmlRequest.Request.ContentArray, processFile.Config);
             watch.Stop();
 
-            xmlRequest.IsCorrect = ValidateResponse(xmlRequest.Response.Content, processFile.Config.Validations);
+            xmlRequest.IsCorrect = ValidateSection(xmlRequest.Response.Content, processFile.Config.Validations);
             xmlRequest.TimeOut = watch.Elapsed;
 
             if (xmlRequest.IsCorrect)

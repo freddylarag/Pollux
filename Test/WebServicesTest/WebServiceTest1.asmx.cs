@@ -21,6 +21,11 @@ namespace WebServicesTest
         [WebMethod]
         public Producto ObtenerProducto(string sku)
         {
+            if (string.IsNullOrWhiteSpace(sku))
+            {
+                throw new ArgumentNullException(nameof(sku));
+            }
+
             return Productos().Where(x => x.SKU == sku).FirstOrDefault();
         }
 

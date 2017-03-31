@@ -15,7 +15,8 @@ namespace Pollux
         public TypeMethod Method { get; set; }
         public Uri Url { get; set; }
         public Dictionary<string, string> Headers { get; set; }
-        public List<Validation> Validations { get; set; }
+        public ValidationCollections Validations { get; set; }
+        
 
         public enum TypeProtocol
         {
@@ -148,21 +149,17 @@ namespace Pollux
                     }
 
                     //validaciones
-                    Validations = new List<Validation>();
+                    Validations = new ValidationCollections();
                     var validaciones = xml.Elements("Config")?
-                            .Elements("ValidationCollection")?
-                            .Elements("Validation");
+                            .Elements("ValidationCollection").FirstOrDefault();
                     if (validaciones != null)
                     {
-                        foreach (var item in validaciones)
+                        Validations.ValidationsFault = ValidationSection(validaciones?.Elements("Fault")?.Elements("Validation"));
+                        Validations.ValidationsHeader = ValidationSection(validaciones?.Elements("Header")?.Elements("Validation"));
+                        Validations.ValidationsBody = ValidationSection(validaciones?.Elements("Body")?.Elements("Validation"));
+                        if (Validations.ValidationsBody?.Count == 0)  
                         {
-                            var validacion=new Validation()
-                            {
-                                Tag = item.Element("Tag")?.Value,
-                                Operation = (ValidationOperation)Enum.Parse(typeof(ValidationOperation), item.Element("Operation")?.Value, true),
-                            };
-                            item.Elements("Value")?.ToList()?.ForEach(x=> validacion?.Values.Add(x?.Value));
-                            Validations.Add(validacion);
+                            Validations.ValidationsBody = ValidationSection(validaciones?.Elements("Validation"));
                         }
                     }
                 }
@@ -175,6 +172,27 @@ namespace Pollux
             {
                 throw new Exception("El archivo.config no es correcto.", ex);
             }
+        }
+
+        static List<Validation> ValidationSection(IEnumerable<XElement> section)
+        {
+            List<Validation> list = new List<Validation>();
+
+            if (section != null)
+            {
+                foreach (var item in section)
+                {
+                    var validacion = new Validation()
+                    {
+                        Tag = item.Element("Tag")?.Value,
+                        Operation = (ValidationOperation)Enum.Parse(typeof(ValidationOperation), item.Element("Operation")?.Value, true),
+                    };
+                    item.Elements("Value")?.ToList()?.ForEach(x => validacion?.Values.Add(x?.Value));
+                    list.Add(validacion);
+                }
+            }
+
+            return list;
         }
 
         public static void CreateTemplate(string path)

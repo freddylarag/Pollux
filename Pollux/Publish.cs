@@ -319,40 +319,54 @@ namespace Pollux
             html.Add("<br/><br/>");
 
             //Validaciones
-            html.Add("<table>");
-            html.Add("  <tr>");
-            html.Add(string.Format("      <th class=\"panelInfo\" colspan=\"3\">Validaciones</th>"));
-            html.Add("  </tr>");
-            html.Add("  <tr>");
-            html.Add(string.Format("      <th class=\"panelInfo\">Tag</th>"));
-            html.Add(string.Format("      <th class=\"panelInfo\">Operación</th>"));
-            html.Add(string.Format("      <th class=\"panelInfo\">Valor</th>"));
-            html.Add("  </tr>");
-            foreach (var item in process.Config.Validations)
-            {
-                html.Add("  <tr>");
-                if (item.Values.Count == 1)
-                {
-                    html.Add(string.Format("      <td>{0}</td><td>{1}</td><td>{2}</td>", item.Tag, item.Operation, item.Values));
-                }else
-                {
-                    var values=string.Format("      <td>{0}</td><td>{1}</td><td>", item.Tag, item.Operation);
-                    foreach (var itemValue in item.Values)
-                    {
-                        values= values + itemValue + "<br/>";
-                    }
-                    values = values + "</td>";
-                    html.Add(values);
-                }
-                html.Add("  </tr>");
-            }
-            html.Add("</table>");
+            html.AddRange(ValidationSections("Colección de validaciones para Header", process.Config.Validations.ValidationsHeader));
+            html.AddRange(ValidationSections("Colección de validaciones para Body", process.Config.Validations.ValidationsBody));
+            html.AddRange(ValidationSections("Colección de validaciones para Fault", process.Config.Validations.ValidationsFault));
 
             html.Add("      </div>");
             html.Add("  </body>");
             html.Add("</html>");
 
             File.WriteAllLines(Path.Combine(path, "Info.html"), html.ToArray(), Encoding.UTF8);
+        }
+
+        private static IEnumerable<string> ValidationSections(string title, List<Validation> validations)
+        {
+            List<string> html = new List<string>();
+            if (validations?.Count > 0)
+            {
+                html.Add("<table>");
+                html.Add("  <tr>");
+                html.Add(string.Format("      <th class=\"panelInfo\" colspan=\"3\">{0}</th>", title));
+                html.Add("  </tr>");
+                html.Add("  <tr>");
+                html.Add(string.Format("      <th class=\"panelInfo\">Tag</th>"));
+                html.Add(string.Format("      <th class=\"panelInfo\">Operación</th>"));
+                html.Add(string.Format("      <th class=\"panelInfo\">Valor</th>"));
+                html.Add("  </tr>");
+                foreach (var item in validations)
+                {
+                    html.Add("  <tr>");
+                    if (item.Values.Count == 1)
+                    {
+                        html.Add(string.Format("      <td>{0}</td><td>{1}</td><td>{2}</td>", item.Tag, item.Operation, item.Values));
+                    }
+                    else
+                    {
+                        var values = string.Format("      <td>{0}</td><td>{1}</td><td>", item.Tag, item.Operation);
+                        foreach (var itemValue in item.Values)
+                        {
+                            values = values + itemValue + "<br/>";
+                        }
+                        values = values + "</td>";
+                        html.Add(values);
+                    }
+                    html.Add("  </tr>");
+                }
+                html.Add("</table>");
+                html.Add("<br/><br/>");
+            }
+            return html;
         }
 
         private static List<string> Body(ProcessFile process, string path)

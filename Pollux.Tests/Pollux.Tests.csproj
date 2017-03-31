@@ -56,8 +56,12 @@
     <Compile Include="SoapTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Response_MultipleEsquemas.xml" />
-    <Content Include="Response_Simple.xml" />
+    <Content Include="Files\Response_Fault.xml" />
+    <Content Include="Files\Response_MultipleEsquemas.xml" />
+    <Content Include="Files\Response_Simple.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Files\TresSecciones.config" />
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">

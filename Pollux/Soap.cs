@@ -16,7 +16,30 @@ namespace Pollux
     public static class Soap
     {
         #region Validaciones
-        public static bool ValidateResponse(string response, List<Validation> validations){
+
+        public static bool ValidateSection(string responde, ValidationCollections validations)
+        {
+            var body = true;
+            var header = true;
+            var fault = true;
+
+            if (validations?.ValidationsBody?.Count > 0)
+            {
+                body=ValidateResponse(responde, validations.ValidationsBody);
+            }
+            if (validations?.ValidationsHeader?.Count > 0)
+            {
+                header=ValidateResponse(responde, validations.ValidationsHeader);
+            }
+            if (validations?.ValidationsFault?.Count > 0)
+            {
+                fault=ValidateResponse(responde, validations.ValidationsFault);
+            }
+
+            return body && header && fault;
+        }
+
+        private static bool ValidateResponse(string response, List<Validation> validations){
             XDocument xml=null;
             try
             {
@@ -255,7 +278,7 @@ namespace Pollux
             xmlRequest.Response = HttpCall(xmlRequest.Request.ContentArray, processFile.Config);
             watch.Stop();
 
-            xmlRequest.IsCorrect = ValidateResponse(xmlRequest.Response.Content, processFile.Config.Validations);
+            xmlRequest.IsCorrect = ValidateSection(xmlRequest.Response.Content, processFile.Config.Validations);
             xmlRequest.TimeOut = watch.Elapsed;
 
             if (xmlRequest.IsCorrect)

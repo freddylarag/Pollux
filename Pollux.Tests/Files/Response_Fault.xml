@@ -1,0 +1,15 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <soap:Fault>
+      <faultcode>soap:Server</faultcode>
+      <faultstring>
+        System.Web.Services.Protocols.SoapException: El servidor no puede procesar la solicitud. ---&gt; System.ArgumentNullException: El valor no puede ser nulo.
+        Nombre del parámetro: sku
+        en WebServicesTest.WebServiceTest1.ObtenerProducto(String sku) en D:\Proyectos Net\NuboServo\Pollux\Test\WebServicesTest\WebServiceTest1.asmx.cs:línea 26
+        --- Fin del seguimiento de la pila de la excepción interna ---
+      </faultstring>
+      <detail />
+    </soap:Fault>
+  </soap:Body>
+</soap:Envelope>
