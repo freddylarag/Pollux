@@ -154,12 +154,12 @@ namespace Pollux
                             .Elements("ValidationCollection").FirstOrDefault();
                     if (validaciones != null)
                     {
-                        Validations.ValidationsFault = ValidationSection(validaciones?.Elements("Fault")?.Elements("Validation"));
-                        Validations.ValidationsHeader = ValidationSection(validaciones?.Elements("Header")?.Elements("Validation"));
-                        Validations.ValidationsBody = ValidationSection(validaciones?.Elements("Body")?.Elements("Validation"));
+                        Validations.ValidationsFault = ValidationSection("Envelope.Body.Fault", validaciones?.Elements("Envelope.Body.Fault")?.Elements("Validation"));
+                        Validations.ValidationsHeader = ValidationSection("Envelope.Header", validaciones?.Elements("Envelope.Header")?.Elements("Validation"));
+                        Validations.ValidationsBody = ValidationSection("Envelope.Body", validaciones?.Elements("Envelope.Body")?.Elements("Validation"));
                         if (Validations.ValidationsBody?.Count == 0)  
                         {
-                            Validations.ValidationsBody = ValidationSection(validaciones?.Elements("Validation"));
+                            Validations.ValidationsBody = ValidationSection("Envelope.Body", validaciones?.Elements("Validation"));
                         }
                     }
                 }
@@ -174,7 +174,7 @@ namespace Pollux
             }
         }
 
-        static List<Validation> ValidationSection(IEnumerable<XElement> section)
+        static List<Validation> ValidationSection(string prefix, IEnumerable<XElement> section)
         {
             List<Validation> list = new List<Validation>();
 
@@ -182,7 +182,7 @@ namespace Pollux
             {
                 foreach (var item in section)
                 {
-                    var validacion = new Validation()
+                    var validacion = new Validation(prefix)
                     {
                         Tag = item.Element("Tag")?.Value,
                         Operation = (ValidationOperation)Enum.Parse(typeof(ValidationOperation), item.Element("Operation")?.Value, true),
@@ -244,18 +244,63 @@ namespace Pollux
 		-->
 	</HeaderCollection>
 	
+
+    <!-- Ejemplos de Validaciones 
+         'ValidationCollection' puede contener 3 estructuras:
+            * Envelope.Header
+            * Envelope.Body
+            * Envelope.Body.Fault
+
+        Los valores posibles para 'Operation':
+            * Equals: Para valores alfanúmericos, puede usar ${null} para indicar valores nulos
+            * NotEquals: Para valores alfanúmericos, puede usar ${null} para indicar valores nulos
+            * Major: Para valores númericos
+            * Minor: Para valores númericos
+    -->
+    <!--
 	<ValidationCollection>
-		<Validation>
-			<Tag>Envelope.Body.Fault.detail.soapFault.tipoError</Tag>
-			<Operation>NotEquals</Operation>
-			<Value>TECNICO</Value>
-		</Validation>
-		<Validation>
-			<Tag>Envelope.Body.Fault.detail.soapFault.tipoError</Tag>
-			<Operation>NotEquals</Operation>
-			<Value>NEGOCIO</Value>
-		</Validation>
+
+        <Envelope.Header>
+            <Validation>
+                <Tag>Section</Tag>
+                <Operation>NotEquals</Operation>
+                <Value>2800</Value>
+            </Validation>
+        </Envelope.Header>
+
+        <Envelope.Body>
+            <Validation>
+                <Tag>ObtenerProductoResponse.ObtenerProductoResult.Precio</Tag>
+                <Operation>NotEquals</Operation>
+                <Value>3800</Value>
+                <Value>2800</Value>
+            </Validation>
+            <Validation>
+                <Tag>ObtenerProductoResponse.ObtenerProductoResult.Stock</Tag>
+                <Operation>Major</Operation>
+                <Value>100</Value>
+            </Validation>
+            <Validation>
+                <Tag>ObtenerProductoResponse.ObtenerProductoResult.SKU</Tag>
+                <Operation>NotEquals</Operation>
+                <Value>${null}</Value>
+            </Validation>
+        </Envelope.Body>
+
+        <Envelope.Body.Fault>
+		    <Validation>
+			    <Tag>detail.soapFault.tipoError</Tag>
+			    <Operation>NotEquals</Operation>
+			    <Value>TECNICO</Value>
+		    </Validation>
+		    <Validation>
+			    <Tag>detail.soapFault.tipoError</Tag>
+			    <Operation>NotEquals</Operation>
+			    <Value>NEGOCIO</Value>
+		    </Validation>
+		</Envelope.Body.Fault>
 	</ValidationCollection>
+    -->
 
 </Config>";
 

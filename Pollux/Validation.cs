@@ -9,6 +9,7 @@ namespace Pollux
     {
         public List<Validation> ValidationsBody { get; set; }
         public List<Validation> ValidationsHeader { get; set; }
+
         public List<Validation> ValidationsFault { get; set; }
 
         public ValidationCollections()
@@ -21,13 +22,32 @@ namespace Pollux
 
     public class Validation
     {
-        public string Tag { get; set; }
+        private string tag;
+        public string Tag {
+            get {
+                return tag;
+            }
+            set {
+                if (value.IndexOf(Prefix) == 0)
+                {
+                    tag = value;
+                }
+                else
+                {
+                    tag = (Prefix + ".").Replace("..", ".") + value;
+                }
+            }
+        }
+
         public ValidationOperation Operation { get; set; }
         public List<string> Values { get; set; }
         public bool Status { get; set; }
+        public string Prefix { get; set; }
 
-        public Validation()
+
+        public Validation(string prefijo)
         {
+            Prefix = prefijo;
             Values = new List<string>();
         }
     }

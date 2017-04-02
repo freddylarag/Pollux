@@ -15,32 +15,14 @@ namespace Pollux
 {
     public static class Soap
     {
+        public static string VALOR_NULO1 = "NULL";
+        public static string VALOR_NULO2 = "${null}";
+
         #region Validaciones
 
-        public static bool ValidateSection(string responde, ValidationCollections validations)
+        public static bool ValidateSection(string response, ValidationCollections validations)
         {
-            var body = true;
-            var header = true;
-            var fault = true;
-
-            if (validations?.ValidationsBody?.Count > 0)
-            {
-                body=ValidateResponse(responde, validations.ValidationsBody);
-            }
-            if (validations?.ValidationsHeader?.Count > 0)
-            {
-                header=ValidateResponse(responde, validations.ValidationsHeader);
-            }
-            if (validations?.ValidationsFault?.Count > 0)
-            {
-                fault=ValidateResponse(responde, validations.ValidationsFault);
-            }
-
-            return body && header && fault;
-        }
-
-        private static bool ValidateResponse(string response, List<Validation> validations){
-            XDocument xml=null;
+            XDocument xml = null;
             try
             {
                 xml = XDocument.Parse(response);
@@ -50,6 +32,55 @@ namespace Pollux
                 Console.WriteLine("La respuesta del servicio no se reconoce como un XML válido.\n{0}", ex.Message);
             }
 
+            var body = true;
+            var header = true;
+            var fault = true;
+
+            if (validations?.ValidationsBody?.Count > 0)
+            {
+                if (ExtractValue(xml, "Envelope.Body").IsExist && !ExtractValue(xml, "Envelope.Body.Fault").IsExist)
+                {
+                    body = ValidateResponse(xml, validations.ValidationsBody);
+                }
+                else
+                {
+                    body = true;
+                }
+            }
+            if (validations?.ValidationsHeader?.Count > 0)
+            {
+                if (ExtractValue(xml, "Envelope.Header").IsExist)
+                {
+                    header = ValidateResponse(xml, validations.ValidationsHeader);
+                }else
+                {
+                    header = true;
+                }
+            }
+
+            if (validations?.ValidationsFault?.Count == 0)
+            {
+                if (ExtractValue(xml, "Envelope.Body.Fault").IsExist)
+                {
+                    fault = false;
+                }
+            }
+            else    
+            {
+                if (ExtractValue(xml, "Envelope.Body.Fault").IsExist)
+                {
+                    fault = ValidateResponse(xml, validations.ValidationsFault);
+                }
+                else
+                {
+                    fault = true;
+                }
+            }
+
+            return body && header && fault;
+        }
+
+        private static bool ValidateResponse(XDocument xml, List<Validation> validations){
             try
             {
                 if (xml == null)
@@ -89,7 +120,7 @@ namespace Pollux
             public string Value { get; set; }
         }
 
-        private static ValidationValue ExtractValue(XDocument xml, string tag)
+        public static ValidationValue ExtractValue(XDocument xml, string tag)
         {
             IEnumerable<XElement> node = null;
             if (xml != null && !string.IsNullOrWhiteSpace(tag))
@@ -109,10 +140,10 @@ namespace Pollux
                     else if (node.Count() > 0)
                     {
                         string xmlns = IdentifyXmlns(item, node);
-                        if (!string.IsNullOrWhiteSpace(xmlns))
-                        {
-                            xmlns = "{" + xmlns + "}";
-                        }
+                        //if (!string.IsNullOrWhiteSpace(xmlns))
+                        //{
+                        //    xmlns = "{" + xmlns + "}";
+                        //}
                         node = node.Elements(xmlns + item);
                     }
                     else
@@ -150,12 +181,23 @@ namespace Pollux
                 while (xnode != null)
                 {
                     xmlns = (xnode as XElement).Name.NamespaceName;
-                    var existe = node.Elements("{" + xmlns + "}" + itemTag).FirstOrDefault();
+                    if (!string.IsNullOrWhiteSpace(xmlns))
+                    {
+                        xmlns = "{" + xmlns + "}";
+                    }
+
+                    var existe = node.Elements(xmlns + itemTag).FirstOrDefault();
                     if (existe!=null)
                     {
                         return xmlns;
                     }
-                    xnode = item.NextNode ?? item.LastNode;
+                    if (xnode.Equals(item.NextNode ?? item.LastNode))
+                    {
+                        xnode = null;
+                    }else
+                    {
+                        xnode = item.NextNode ?? item.LastNode;
+                    }
                 }
             }
 
@@ -175,7 +217,7 @@ namespace Pollux
                 {
                     if (validationsItem.Operation == ValidationOperation.Equals)
                     {
-                        if (value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
+                        if (value.Equals(VALOR_NULO1, StringComparison.InvariantCultureIgnoreCase) || value.Equals(VALOR_NULO2, StringComparison.InvariantCultureIgnoreCase))
                         {
                             if (string.IsNullOrEmpty(valor.Value))
                             {
@@ -189,7 +231,7 @@ namespace Pollux
                     }
                     else if (validationsItem.Operation == ValidationOperation.NotEquals)
                     {
-                        if (value.Equals("NULL", StringComparison.InvariantCultureIgnoreCase))
+                        if (value.Equals(VALOR_NULO1, StringComparison.InvariantCultureIgnoreCase) || value.Equals(VALOR_NULO2, StringComparison.InvariantCultureIgnoreCase))
                         {
                             if (!string.IsNullOrEmpty(valor.Value))
                             {
