@@ -9,8 +9,9 @@ namespace Pollux
         static string  workspace=string.Empty;
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
-        public static string ApplicationName = "Pollux v0.15 Beta";
-        public static string ApplicationBuild = "build 01/04/2017";
+        public static string ApplicationName = "Pollux v0.16 Beta";
+        public static string ApplicationDescription = "Automatización de casos de prueba para servicios SOAP y REST";
+        public static string ApplicationBuild = "build 02/04/2017";
         public static string Autor = "Freddy Lara - freddylarag@gmail.com";
 
         static void Main(string[] args)
@@ -49,7 +50,7 @@ namespace Pollux
                 Console.WriteLine("\n");
                 Console.WriteLine("====================================================================");
                 Console.WriteLine("                   {0}        {1}              ",ApplicationName, ApplicationBuild);
-                Console.WriteLine("    Automatización de casos de prueba para servicios SOAP y REST    ");
+                Console.WriteLine("    {0}    ", ApplicationDescription);
                 Console.WriteLine("                {0}",Autor);
                 Console.WriteLine("====================================================================");
                 Console.WriteLine();
@@ -205,9 +206,10 @@ namespace Pollux
 
                     //Procesar
                     Console.WriteLine("\nEjecución de Casos de Prueba:");
-                    string fechaEjecucion = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+                    var fecha = DateTime.Now;
+                    string fechaEjecucion = fecha.ToString("yyyyMMdd_HHmmss");
                     resumenCasosPrueba.Add(Soap.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.Name}_{fechaEjecucion}"), fileItem));
-                    Publish.Save(Path.Combine(input.Workspace, "Reports", $"{fileItem.Name}_{fechaEjecucion}"), fileItem);
+                    Publish.Save(Path.Combine(input.Workspace, "Reports", $"{fileItem.Name}_{fechaEjecucion}"), fileItem,fecha);
                 }
                 catch (Exception ex)
                 {

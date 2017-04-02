@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Pollux"
-!define PRODUCT_VERSION "v0.15"
+!define PRODUCT_VERSION "v0.16"
 !define PRODUCT_PUBLISHER "Freddy Lara"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Pollux.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -51,9 +51,7 @@ Section "Principal" SEC01
   File "..\Pollux\bin\x64\Debug\Pollux.exe"
   File "..\Pollux\bin\x64\Debug\Pollux.exe.config"
   File "..\Pollux\bin\x64\Debug\Pollux.pdb"
-  ;File "..\Pollux\bin\x64\Debug\Pollux.vshost.exe"
-  ;File "..\Pollux\bin\x64\Debug\Pollux.vshost.exe.config"
-  ;File "..\Pollux\bin\x64\Debug\Pollux.vshost.exe.manifest"
+  File "..\Pollux\bin\x64\Debug\TemplateClassic.css"
   File "..\Pollux\bin\x64\Debug\Remotion.Data.Linq.dll"
   File "..\Pollux\bin\x64\Debug\Remotion.dll"
   File "..\Pollux\bin\x64\Debug\Remotion.Interfaces.dll"

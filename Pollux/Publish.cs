@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -9,231 +10,48 @@ namespace Pollux
 {
     public static class Publish
     {
+        private static string FileCss = string.Empty;
+        private static DateTime FechaProceso;
+
+        public static void Save(string path, ProcessFile process,DateTime fecha)
+        {
+            FechaProceso = fecha;
+
+            var css = ConfigurationManager.AppSettings["CSS"];
+            if (!File.Exists(css))
+            {
+                css = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, css);
+                if (!File.Exists(css))
+                {
+                    css = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TemplateClassic.css");
+                }
+            }
+            FileCss = Path.GetFileName(css);
+            File.Copy(css, Path.Combine(path, FileCss));
+
+
+            PageCasosNegocio(path, process);
+            PageCasosBorde(path, process);
+            PageInfo(path, process);
+        }
+
+        #region Metodos transversales
+
+        enum Pagina
+        {
+            CasosNegocio,
+            CasosBorde,
+            Info,
+        }
+
         private static string Styles()
         {
-            string style = @"
-    <style>
-        body {
-            font-family: sansation;
-            font-size: 16px;
-	        margin: 0;
-  	        padding: 0;
+            return string.Format("<link rel=\"stylesheet\" type=\"text/css\" href=\"{0}\">", FileCss);
         }
 
-        .content{
-  	        padding: 10;
-        }
-
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-
-        th {
-            height: 40px;background-color: #4CAF50;
-            color: white;
-        }
-
-        tr:hover {
-            background-color: #f5f5f5
-        }
-
-        th, td {
-            padding: 10px; 
-            text-align: left;
-        }
-
-        .button {
-            background-color: #4CAF50; /* Green */
-            border: none;
-            color: white;
-            padding: 16px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-            margin: 4px 2px;
-            -webkit-transition-duration: 0.4s; /* Safari */
-            transition-duration: 0.4s;
-            cursor: pointer;
-        }
-
-        .fill{
-            width: 100%;
-        }
-        
-        .slim{
-            padding: 5px 32px;
-        }
-
-        .buttonSucess {
-            background-color: white; 
-            color: black; 
-            border: 2px solid #4CAF50;
-        }
-
-        .buttonSucess:hover {
-            background-color: #4CAF50;
-            color: white;
-        }
-
-        .buttonInfo {
-            background-color: white; 
-            color: black; 
-            border: 2px solid #008CBA;
-        }
-
-        .buttonInfo:hover {
-            background-color: #008CBA;
-            color: white;
-        }
-
-        .buttonDanger {
-            background-color: white; 
-            color: black; 
-            border: 2px solid #f44336;
-        }
-
-        .buttonDanger:hover {
-            background-color: #f44336;
-            color: white;
-        }
-
-        .button4 {
-            background-color: white;
-            color: black;
-            border: 2px solid #e7e7e7;
-        }
-
-        .button4:hover {background-color: #e7e7e7;}
-
-        .button5 {
-            background-color: white;
-            color: black;
-            border: 2px solid #555555;
-        }
-
-        .button5:hover {
-            background-color: #555555;
-            color: white;
-            text-align: center;
-        }
-
-        .panelDanger{
-            background-color: #f44336;
-            color: white;
-            text-align: center;
-        }
-
-        .panelInfo {
-            background-color: #008CBA;
-            color: white;
-            text-align: center;
-        }
-
-        .panelSucess {
-            background-color: #4CAF50;
-            color: white;
-            text-align: center;
-        }
-
-        .center{
-            text-align: center;
-        }
-        .left{
-            text-align: left;
-        }
-        .right{
-            text-align: right;
-        }
-
-        /*Inicio Navigation Bar*/
-        ul {
-            list-style-type: none;
-            margin: 0;
-            padding: 0;
-            overflow: hidden;
-            background-color: #333;
-        }
-
-        li {
-            float: left;
-            border-right: 1px solid #bbb;
-        }
-
-        li a {
-            display: block;
-            color: white;
-            text-align: center;
-            padding: 14px 16px;
-            text-decoration: none;
-        }
-
-        /* Change the link color to #111 (black) on hover */
-        li a:hover:not(.active) {
-            background-color: #111;
-        }
-        .active {
-            background-color: #4CAF50;
-        }
-        /*Fin Navigation Bar*/
-
-		.border-round{
-			text-align: left;
-			padding:16px 16px 16px 16px;
-			border:1px solid #ccc!important;
-			border-radius:16px!important;
-			color: #fff;
-		}
-		.empty{
-			padding:1px 16px 1px 16px;
-			text-align: center;
-			background-color: #ccc;
-			color: #777;
-			font-weight: bold;
-			width:70px;
-			border:1px solid #ccc!important;
-			border-radius:16px!important;
-		}		
-		.null{
-			padding:1px 16px 1px 16px;
-			text-align: center;
-			background-color: #ccc;
-			color: #fff;
-			font-weight: bold;
-			width:70px;
-			border:1px solid #ccc!important;
-			border-radius:16px!important;
-		}
-
-</style>
-";
-            return style;
-        }
-
-        public static void Save(string path, ProcessFile process){
-            List<string> html = new List<string>();
-            html.Add("<html>");
-            html.Add("  <header>");
-            html.Add("      <title>Automatización de pruebas - Pollux</title>");
-            html.Add(Styles());
-            html.Add("  </header>");
-            html.Add("  <body>");
-            html.AddRange(NavigationBar(process, Pagina.CasosNegocio));
-            html.Add("      <div class=\"content\">");
-            html.Add(Title(process));
-            html.AddRange(Body(process, path));
-            html.Add("      </div>");
-            html.Add("  </body>");
-            html.Add("</html>");
-            File.WriteAllLines(Path.Combine(path, "Index.html"), html.ToArray(), Encoding.UTF8);
-
-            Info(path, process,Pagina.Info);
-            PruebasBorde(path, process,Pagina.CasosBorde);
+        private static string TitleBrowser()
+        {
+            return string.Format("      <title>{0} - {1}</title>", Program.ApplicationName, Program.ApplicationDescription);
         }
 
         private static string Title(ProcessFile process)
@@ -241,11 +59,6 @@ namespace Pollux
             return "<h1 class=\"center\">" + process.Config.Description + "</h1>";
         }
 
-        enum Pagina{
-            CasosNegocio,
-            CasosBorde,
-            Info,
-        }
         private static List<string> NavigationBar(ProcessFile process, Pagina pagina)
         {
             List<string> html = new List<string>();
@@ -260,121 +73,66 @@ namespace Pollux
             return html;
         }
 
-        private static void PruebasBorde(string path, ProcessFile process, Pagina pagina)
+        #endregion
+
+        #region Pagina Principal de hallazgos
+
+        private static void PageCasosNegocio(string path,ProcessFile process)
         {
             List<string> html = new List<string>();
-
             html.Add("<html>");
             html.Add("  <header>");
-            html.Add("      <title>Automatización de pruebas - Pollux</title>");
+            html.Add(TitleBrowser());
             html.Add(Styles());
             html.Add("  </header>");
             html.Add("  <body>");
-            html.AddRange(NavigationBar(process,pagina));
+            html.AddRange(NavigationBar(process, Pagina.CasosNegocio));
             html.Add("      <div class=\"content\">");
             html.Add(Title(process));
-            html.Add("          <h1>En construcción</h1>");
+            html.AddRange(ResumenCasos(process));
+            html.AddRange(Body(process, path));
             html.Add("      </div>");
             html.Add("  </body>");
             html.Add("</html>");
-
-            File.WriteAllLines(Path.Combine(path, "SpecialTests.html"), html.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(Path.Combine(path, "Index.html"), html.ToArray(), Encoding.UTF8);
         }
 
-        private static void Info(string path, ProcessFile process, Pagina pagina)
+        private static List<string> ResumenCasos(ProcessFile process)
         {
             List<string> html = new List<string>();
 
-
-            html.Add("<html>");
-            html.Add("  <header>");
-            html.Add("      <title>Automatización de pruebas - Pollux</title>");
-            html.Add(Styles());
-            html.Add("  </header>");
-            html.Add("  <body>");
-            html.AddRange(NavigationBar(process,pagina));
-            html.Add("      <div class=\"content\">");
-            html.Add(Title(process));
-
-            //header
             html.Add("<table>");
             html.Add("  <tr>");
-            html.Add(string.Format("      <th class=\"panelInfo\" colspan=\"2\">Header</th>"));
-            html.Add("  </tr>");
-            html.Add("  <tr>");
-            html.Add(string.Format("      <th class=\"panelInfo\">Campo</th>"));
-            html.Add(string.Format("      <th class=\"panelInfo\">Valor</th>"));
-            html.Add("  </tr>");
-            html.Add("  <tr>");
-            html.Add(string.Format("      <td>URL</td><td>{0}</td>",process.Config.Url));
-            html.Add("  </tr>");
-            foreach (var item in process.Config.Headers)
+
+            var estado = process.Excel.RequestXml.Where(x => !x.IsCorrect).Count() > 0 ? process.Excel.RequestXml.FirstOrDefault(x => !x.IsCorrect) : process.Excel.RequestXml.FirstOrDefault(x => x.IsCorrect);
+            if (estado.IsCorrect)
             {
-                html.Add("  <tr>");
-                html.Add(string.Format("      <td>{0}</td><td>{1}</td>", item.Key,item.Value));
-                html.Add("  </tr>");
+                html.Add("<td>");
+                html.Add(string.Format("Estado: <b class=\"labelSucess\">{0}</b>", estado.Status));
+                html.Add("</td>");
             }
-            html.Add("<table>");
+            else
+            {
+                html.Add("<td>");
+                html.Add(string.Format("Estado: <b class=\"labelDanger\">{0}</b>", estado.Status));
+                html.Add("</td>");
+            }
 
+            html.Add(string.Format("      <td>Casos Ejecutados: {0}</td>", process.Excel.RequestXml.Count));
+            html.Add(string.Format("      <td>Casos Correctos: {0}</td>", process.Excel.RequestXml.Where(x => x.IsCorrect).Count()));
+            html.Add(string.Format("      <td>Casos Erroneos: {0}</td>", process.Excel.RequestXml.Where(x => !x.IsCorrect).Count()));
+            html.Add(string.Format("      <td>Fecha Ejecución: {0}</td>", FechaProceso.ToString("dd/MM/yyyy HH:mm:ss")));
+            html.Add("  </tr>");
+            html.Add("<table>");
             html.Add("<br/><br/>");
 
-            //Validaciones
-            html.AddRange(ValidationSections("Colección de validaciones para Header", process.Config.Validations.ValidationsHeader));
-            html.AddRange(ValidationSections("Colección de validaciones para Body", process.Config.Validations.ValidationsBody));
-            html.AddRange(ValidationSections("Colección de validaciones para Fault", process.Config.Validations.ValidationsFault));
-
-            html.Add("      </div>");
-            html.Add("  </body>");
-            html.Add("</html>");
-
-            File.WriteAllLines(Path.Combine(path, "Info.html"), html.ToArray(), Encoding.UTF8);
-        }
-
-        private static IEnumerable<string> ValidationSections(string title, List<Validation> validations)
-        {
-            List<string> html = new List<string>();
-            if (validations?.Count > 0)
-            {
-                html.Add("<table>");
-                html.Add("  <tr>");
-                html.Add(string.Format("      <th class=\"panelInfo\" colspan=\"3\">{0}</th>", title));
-                html.Add("  </tr>");
-                html.Add("  <tr>");
-                html.Add(string.Format("      <th class=\"panelInfo\">Tag</th>"));
-                html.Add(string.Format("      <th class=\"panelInfo\">Operación</th>"));
-                html.Add(string.Format("      <th class=\"panelInfo\">Valor</th>"));
-                html.Add("  </tr>");
-                foreach (var item in validations)
-                {
-                    html.Add("  <tr>");
-                    if (item.Values.Count == 1)
-                    {
-                        html.Add(string.Format("      <td>{0}</td><td>{1}</td><td>{2}</td>", item.Tag, item.Operation, item.Values));
-                    }
-                    else
-                    {
-                        var values = string.Format("      <td>{0}</td><td>{1}</td><td>", item.Tag, item.Operation);
-                        foreach (var itemValue in item.Values)
-                        {
-                            values = values + itemValue + "<br/>";
-                        }
-                        values = values + "</td>";
-                        html.Add(values);
-                    }
-                    html.Add("  </tr>");
-                }
-                html.Add("</table>");
-                html.Add("<br/><br/>");
-            }
             return html;
         }
 
         private static List<string> Body(ProcessFile process, string path)
         {
             List<string> html = new List<string>();
-
             html.Add("<table>");
-
 
             //Encabezado
             html.Add("<tr>");
@@ -419,7 +177,7 @@ namespace Pollux
 
             //Evidencia de request
             html.Add("<tr>");
-            html.Add(string.Format("<td></td><td style=\"text-align: center\">Evidencia</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">Evidencia</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 html.Add("<td>");
@@ -436,9 +194,9 @@ namespace Pollux
             }
             html.Add("</tr>");
 
-            //TimeOut
+            //StatusCode
             html.Add("<tr>");
-            html.Add(string.Format("<td></td><td style=\"text-align: center\">StatusCode</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">StatusCode</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 html.Add("<td>");
@@ -449,7 +207,7 @@ namespace Pollux
 
             //TimeOut
             html.Add("<tr>");
-            html.Add(string.Format("<td></td><td style=\"text-align: center\">TimeOut</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">TimeOut</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 html.Add("<td>");
@@ -460,7 +218,7 @@ namespace Pollux
 
             //Status
             html.Add("<tr>");
-            html.Add(string.Format("<td></td><td style=\"text-align: center\">Estado</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">Estado</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 if (item.IsCorrect)
@@ -497,5 +255,125 @@ namespace Pollux
 
             return value;
         }
+
+        #endregion
+
+        #region Pagina de Pruebas de borde
+
+        private static void PageCasosBorde(string path, ProcessFile process)
+        {
+            List<string> html = new List<string>();
+
+            html.Add("<html>");
+            html.Add("  <header>");
+            html.Add(TitleBrowser());
+            html.Add(Styles());
+            html.Add("  </header>");
+            html.Add("  <body>");
+            html.AddRange(NavigationBar(process, Pagina.CasosBorde));
+            html.Add("      <div class=\"content\">");
+            html.Add(Title(process));
+            html.Add("          <h1>En construcción</h1>");
+            html.Add("      </div>");
+            html.Add("  </body>");
+            html.Add("</html>");
+
+            File.WriteAllLines(Path.Combine(path, "SpecialTests.html"), html.ToArray(), Encoding.UTF8);
+        }
+
+        #endregion
+
+        #region Pagina Informacion
+
+        private static void PageInfo(string path, ProcessFile process)
+        {
+            List<string> html = new List<string>();
+
+
+            html.Add("<html>");
+            html.Add("  <header>");
+            html.Add(TitleBrowser());
+            html.Add(Styles());
+            html.Add("  </header>");
+            html.Add("  <body>");
+            html.AddRange(NavigationBar(process, Pagina.Info));
+            html.Add("      <div class=\"content\">");
+            html.Add(Title(process));
+
+            //header
+            html.Add("<table>");
+            html.Add("  <tr>");
+            html.Add(string.Format("      <th class=\"panelInfo\" colspan=\"2\">Header</th>"));
+            html.Add("  </tr>");
+            html.Add("  <tr>");
+            html.Add(string.Format("      <th class=\"panelInfo\">Campo</th>"));
+            html.Add(string.Format("      <th class=\"panelInfo\">Valor</th>"));
+            html.Add("  </tr>");
+            html.Add("  <tr>");
+            html.Add(string.Format("      <td>URL</td><td>{0}</td>", process.Config.Url));
+            html.Add("  </tr>");
+            foreach (var item in process.Config.Headers)
+            {
+                html.Add("  <tr>");
+                html.Add(string.Format("      <td>{0}</td><td>{1}</td>", item.Key, item.Value));
+                html.Add("  </tr>");
+            }
+            html.Add("<table>");
+
+            html.Add("<br/><br/>");
+
+            //Validaciones
+            html.AddRange(ValidationSections("Colección de validaciones para Header", process.Config.Validations.ValidationsHeader));
+            html.AddRange(ValidationSections("Colección de validaciones para Body", process.Config.Validations.ValidationsBody));
+            html.AddRange(ValidationSections("Colección de validaciones para Fault", process.Config.Validations.ValidationsFault));
+
+            html.Add("      </div>");
+            html.Add("  </body>");
+            html.Add("</html>");
+
+            File.WriteAllLines(Path.Combine(path, "Info.html"), html.ToArray(), Encoding.UTF8);
+        }
+
+        private static IEnumerable<string> ValidationSections(string title, List<Validation> validations)
+        {
+            List<string> html = new List<string>();
+            if (validations?.Count > 0)
+            {
+                html.Add("<table>");
+                html.Add("  <tr>");
+                html.Add(string.Format("      <th class=\"panelInfo\" colspan=\"3\">{0}</th>", title));
+                html.Add("  </tr>");
+                html.Add("  <tr>");
+                html.Add(string.Format("      <th class=\"panelInfo\">Tag</th>"));
+                html.Add(string.Format("      <th class=\"panelInfo\">Operación</th>"));
+                html.Add(string.Format("      <th class=\"panelInfo\">Valor</th>"));
+                html.Add("  </tr>");
+                foreach (var item in validations)
+                {
+                    html.Add("  <tr>");
+                    if (item.Values.Count == 1)
+                    {
+                        html.Add(string.Format("      <td>{0}</td><td>{1}</td><td>{2}</td>", item.Tag, item.Operation, item.Values.FirstOrDefault()));
+                    }
+                    else
+                    {
+                        var values = string.Format("      <td>{0}</td><td>{1}</td><td>", item.Tag, item.Operation);
+                        foreach (var itemValue in item.Values)
+                        {
+                            values = values + itemValue + "<br/>";
+                        }
+                        values = values + "</td>";
+                        html.Add(values);
+                    }
+                    html.Add("  </tr>");
+                }
+                html.Add("</table>");
+                html.Add("<br/><br/>");
+            }
+            return html;
+        }
+
+        #endregion
+
     }
 }
