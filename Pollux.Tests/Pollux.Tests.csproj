@@ -57,12 +57,20 @@
     <Compile Include="SoapTest.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Files\Response_Fault.xml" />
-    <Content Include="Files\Response_MultipleEsquemas.xml" />
-    <Content Include="Files\Response_Simple.xml" />
+    <Content Include="Files\Response_Fault.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\Response_MultipleEsquemas.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Files\Response_Simple.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Files\TresSecciones.config" />
+    <None Include="Files\TresSecciones.config">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <Choose>
     <When Condition="('$(VisualStudioVersion)' == '10.0' or '$(VisualStudioVersion)' == '') and '$(TargetFrameworkVersion)' == 'v3.5'">
