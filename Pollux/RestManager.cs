@@ -1,5 +1,4 @@
 ﻿using LinqToExcel;
-using SoapTest;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -13,8 +12,22 @@ using System.Xml.Linq;
 
 namespace Pollux
 {
-    public static class Rest
+    public static class RestManager
     {
+        public static string[] Start(string path, ProcessFile processFile)
+        {
+            List<string> result = new List<string>();
+            int i = 1;
+
+            foreach (var xmlRequest in processFile.CasosNegocio.Excel.RequestXml)
+            {
+                Notify(i, xmlRequest, processFile, path);
+                i++;
+            }
+
+            return result.ToArray();
+        }
+
         private static bool ValidateSection(string responde, ValidationCollections validations)
         {
             var body = ValidateResponse(responde, validations.ValidationsBody);
@@ -156,20 +169,6 @@ namespace Pollux
             }        
         }
 
-        public static string[] Start(string path, ProcessFile processFile)
-        {
-            List<string> result = new List<string>();
-            int i = 1;
-
-            foreach (var xmlRequest in processFile.CasosNegocio.Excel.RequestXml)
-            {
-                Notify(i, xmlRequest, processFile, path);
-                i++;
-            }
-
-            return result.ToArray();
-        }
-
         private static string Notify(int i,Summary xmlRequest, ProcessFile processFile, string path)
         {
             string fechaEjecucion = DateTime.Now.ToString("yyyyMMdd_HHmmss");
@@ -198,7 +197,6 @@ namespace Pollux
 
             return mensaje;
         }
-
 
         //X509Certificate2 certificate = new X509Certificate2(requestDto.CertificatePath, requestDto.CertificatePassword);
         //Initialize HttpWebRequest.

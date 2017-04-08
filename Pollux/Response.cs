@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SoapTest
+namespace Pollux
 {
     public class Response
     {

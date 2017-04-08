@@ -17,35 +17,6 @@ namespace Pollux
 
         static void Main(string[] args)
         {
-            //    WebRequestHandler webRequestHandler = new WebRequestHandler();
-            //    webRequestHandler.Proxy = new WebProxy("http://mataquito.cl:8080", true, new string[] { }, new NetworkCredential("flarag", "Paulette.02"));// new PolluxProxy("http://mataquito.cl",8080,"flarag","Paulette.02");
-            //    webRequestHandler.UseProxy = true;
-            //    //webRequestHandler.ClientCertificates.Add(new X509Certificate2(@"E:\Documentos\Respaldo Gonzalo\Pershing\Fase 1\keystore\Qa\pershing.pem"));
-
-            //    HttpClient client = new HttpClient(webRequestHandler);
-            //    //var requestContent = new StringContent("", System.Text.Encoding.UTF8, "application/json");
-            //    HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "https://apigateway.qa.bnymellon.com/download-investor-documents/v2/criteria-fields/");
-            //    //request.Content = requestContent;
-            //    //System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
-
-            //    client.DefaultRequestHeaders.Clear();
-            //    ////HttpRequestMessage request = new HttpRequestMessage();
-            //    client.DefaultRequestHeaders.Add("Accept", "application/json");
-            //    client.DefaultRequestHeaders.Add("Accept-Encoding", "gzip,deflate");
-            //    client.DefaultRequestHeaders.Add("User-Agent", "Apache-HttpClient/4.1.1 (java 1.5)");
-
-            //    client.DefaultRequestHeaders.Add("Authorization", "Bearer a973e0c7e4de593b2e8d3749f180343c");
-            //    HttpResponseMessage response = client.GetAsync("https://apigateway.qa.bnymellon.com/download-investor-documents/v2/criteria-fields", HttpCompletionOption.ResponseContentRead).Result;
-            //    response.EnsureSuccessStatusCode();
-
-            //    //var responseBody = client.SendAsync(request).Result.Content.ReadAsByteArrayAsync().Result;
-            //    var responseBody = response.Content.ReadAsByteArrayAsync().Result;
-            //    string s = System.Text.Encoding.UTF8.GetString(responseBody);
-            //    Console.WriteLine(s);
-
-
-
-
             try
             {
                 Console.WriteLine("\n");
@@ -230,7 +201,7 @@ namespace Pollux
             //Procesar casos de negocio
             Console.WriteLine("\nEjecución de Casos de Prueba:");
             fileItem.CasosNegocio.Excel = new Excel(fileItem.CasosNegocio.FileData, fileItem.CasosNegocio.Xml);
-            resumenCasosPrueba.Add(Soap.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosNegocio));
+            resumenCasosPrueba.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosNegocio));
 
 
             //Procesar casos de borde
@@ -239,7 +210,7 @@ namespace Pollux
             fileItem.CasosBorde.Xml = fileItem.CasosNegocio.Xml;
             fileItem.CasosBorde.FileData = fileItem.CasosNegocio.FileData;
             fileItem.CasosBorde.Excel = new ExcelCasoBorde(fileItem.CasosNegocio.Excel.Fields, fileItem.CasosBorde.Xml);
-            resumenCasosBorde.Add(Soap.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosBorde));
+            resumenCasosBorde.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosBorde));
 
 
             //Publicar informe

@@ -1,22 +1,17 @@
-﻿using LinqToExcel;
-using SoapTest;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using System.Threading.Tasks;
 using System.Xml.Linq;
 
 namespace Pollux
 {
-    public static class Soap
+    public static class SoapManager
     {
         public static string VALOR_NULO1 = "NULL";
         public static string VALOR_NULO2 = Excel.KeyNull;
+        private static HttpHelper Http=new HttpHelper();
+
 
         #region Validaciones
 
@@ -319,7 +314,7 @@ namespace Pollux
             xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, "Request");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            xmlRequest.Response = HttpCall(xmlRequest.Request.ContentArray, processFile.Config);
+            xmlRequest.Response = Http.HttpCall(xmlRequest.Request.ContentArray, processFile.Config);
             watch.Stop();
 
             xmlRequest.IsCorrect = ValidateSection(xmlRequest.Response.Content, processFile.Config.Validations);
@@ -340,76 +335,7 @@ namespace Pollux
 
             return mensaje;
         }
-        
-        private static Response HttpCall(string[] xml, Config config)
-        {
-            string content = string.Empty;
-            foreach (var item in xml)
-            {
-                content += item + "\n";
-            }
-
-            HttpClientHandler handler = new HttpClientHandler()
-            {
-                AutomaticDecompression = DecompressionMethods.GZip | DecompressionMethods.Deflate
-            };
-            System.Net.Http.HttpClient http = new System.Net.Http.HttpClient(handler);            
-            foreach (var item in config.Headers)
-            {
-                if (!item.Key.Equals("Content-Type", StringComparison.InvariantCultureIgnoreCase))
-                {
-                    if (!string.IsNullOrWhiteSpace(item.Value))
-                    {
-                        http.DefaultRequestHeaders.Add(item.Key, item.Value);
-                    }
-                }
-            }
-            http.DefaultRequestHeaders.Add("User-Agent",Program.ApplicationName);
-
-            var response = http.PostAsync(config.Url, new StringContent(content, System.Text.Encoding.UTF8, config.Headers["Content-Type"])).Result;
-            return new Response {
-                Content = response.Content.ReadAsStringAsync().Result,
-                StatusCode = response.StatusCode,
-                IsSuccessStatusCode = response.IsSuccessStatusCode,
-            };
-        }
-
-        //private static string HttpCall(string[] xml, Config config)
-        //{
-        //    string request = string.Empty;
-        //    foreach (var item in xml)
-        //    {
-        //        request += item + "\n";
-        //    }
-
-        //    //Creating the X.509 certificate.
-        //    //X509Certificate2 certificate = new X509Certificate2(requestDto.CertificatePath, requestDto.CertificatePassword);
-        //    //Initialize HttpWebRequest.
-        //    //HttpWebRequest requestss = (HttpWebRequest)WebRequest.Create("");
-        //    //Set the Timeout.
-        //    //requestss.Timeout = requestDto.TimeoutMilliseconds;
-        //    //Add certificate to request.
-        //    //requestss.ClientCertificates.Add();
-
-        //    var dfff = new X509Certificate(@"E:\Documentos\Respaldo Gonzalo\Pershing\Fase 1\keystore\Qa\pershing.pem");
-
-        //    //WebRequest.DefaultWebProxy.Credentials = CredentialCache.DefaultNetworkCredentials;
-        //    System.Net.Http.HttpClient http = new System.Net.Http.HttpClient();
-        //    foreach (var item in config.Headers)
-        //    {
-        //        if (!item.Key.Equals("Content-Type", StringComparison.OrdinalIgnoreCase))
-        //        {
-        //            if (!string.IsNullOrWhiteSpace(item.Value))
-        //            {
-        //                http.DefaultRequestHeaders.Add(item.Key, item.Value);
-        //            }
-        //        }
-        //    }
-        //    var response = http.PostAsync(config.Url, new StringContent(request, System.Text.Encoding.UTF8, config.Headers["Content-Type"])).Result;
-        //    string responText = response.Content.ReadAsStringAsync().Result;
-        //    return responText;
-        //}
-
+ 
         private static string WriteXml(string iteracion, string path, string[] xml, string sufijo)
         {
             if (!System.IO.Directory.Exists(path))
