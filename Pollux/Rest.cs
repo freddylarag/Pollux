@@ -161,7 +161,7 @@ namespace Pollux
             List<string> result = new List<string>();
             int i = 1;
 
-            foreach (var xmlRequest in processFile.Excel.RequestXml)
+            foreach (var xmlRequest in processFile.CasosNegocio.Excel.RequestXml)
             {
                 Notify(i, xmlRequest, processFile, path);
                 i++;
@@ -174,24 +174,24 @@ namespace Pollux
         {
             string fechaEjecucion = DateTime.Now.ToString("yyyyMMdd_HHmmss");
             string mensaje = string.Empty;
-            xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, fechaEjecucion, processFile.Name, "Request");
+            xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, fechaEjecucion, processFile.CasosNegocio.Name, "Request");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            xmlRequest.Response = HttpCall(xmlRequest.Request.ContentArray, processFile.Config);
+            xmlRequest.Response = HttpCall(xmlRequest.Request.ContentArray, processFile.CasosNegocio.Config);
             watch.Stop();
 
-            xmlRequest.IsCorrect = ValidateSection(xmlRequest.Response.Content, processFile.Config.Validations);
+            xmlRequest.IsCorrect = ValidateSection(xmlRequest.Response.Content, processFile.CasosNegocio.Config.Validations);
             xmlRequest.TimeOut = watch.Elapsed;
 
             if (xmlRequest.IsCorrect)
             {
-                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.Name, "Response_Ok");
+                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.CasosNegocio.Name, "Response_Ok");
                 mensaje = string.Format("Caso {0} procesado\tOk\tTimeout: {1}", i, watch.Elapsed);
                 Console.WriteLine(mensaje);
             }
             else
             {
-                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.Name, "Response_Error");
+                xmlRequest.Response.Path = WriteXml(i.ToString(), path, xmlRequest.Response.Content, fechaEjecucion, processFile.CasosNegocio.Name, "Response_Error");
                 mensaje = string.Format("Caso {0} procesado\tError\tTimeout: {1}", i, watch.Elapsed);
                 Console.WriteLine(mensaje);
             }

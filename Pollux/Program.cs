@@ -9,6 +9,7 @@ namespace Pollux
         static string  workspace=string.Empty;
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
+        static List<string[]> resumenCasosBorde = new List<string[]>();
         public static string ApplicationName = "Pollux v0.16 Beta";
         public static string ApplicationDescription = "Automatización de casos de prueba para servicios SOAP y REST";
         public static string ApplicationBuild = "build 02/04/2017";
@@ -145,77 +146,16 @@ namespace Pollux
             foreach (var fileItem in input.ProcessFiles)
             {
                 proceso++;
-                Console.WriteLine("\n-------------------------------- Proceso {0} Iniciado  ({1})--------------------------------", proceso, fileItem.Name);
+                Console.WriteLine("\n-------------------------------- Proceso {0} Iniciado  ({1})--------------------------------", proceso, fileItem.CasosNegocio.Name);
                 try
                 {
-                    input.Workspace = System.IO.Path.GetDirectoryName(fileItem.FileTemplate);
-                    Console.WriteLine("Config:\t{0}", fileItem.FileConfig.Replace(input.Workspace,""));
-                    Console.WriteLine("Xml:\t{0}", fileItem.FileTemplate.Replace(input.Workspace, ""));
-                    Console.WriteLine("Xls:\t{0}", fileItem.FileData.Replace(input.Workspace, ""));
-
-                    //Config
-                    Console.WriteLine("\nSOAP");
-                    fileItem.Config = new Config(fileItem.FileConfig,input.Url);
-                    Console.WriteLine("\tURL: {0}", fileItem.Config.Url);
-                    if (fileItem.Config.Headers.Count == 0)
-                    {
-                        Console.WriteLine("\tError: No existen encabezados soap.");
-                    }
-                    else
-                    {
-                        foreach (var item in fileItem.Config.Headers)
-                        {
-                            Console.WriteLine("\t{0}: {1}", item.Key, item.Value);
-                        }
-                    }
-
-                    //XML
-                    fileItem.Xml = new Xml(fileItem.FileTemplate);
-                    if (fileItem.Xml.Fields.Count == 0 
-                        && (
-                                fileItem.Config.Type == Config.TypeProtocol.SOAP 
-                                    || 
-                                (fileItem.Config.Type == Config.TypeProtocol.REST 
-                                    && 
-                                    (fileItem.Config.Method==Config.TypeMethod.POST || fileItem.Config.Method == Config.TypeMethod.POST)
-                                )
-                            )
-                        )
-                    {
-                        Console.WriteLine("\nCampos detectatos en XML: {0}", fileItem.Xml.Fields.Count);
-                        Console.WriteLine("\tError: No existen campos mapeados.");
-                    }
-                    else
-                    {
-                        Console.WriteLine("\nCampos detectatos en XML: {0}", fileItem.Xml.Fields.Count);
-                        if (fileItem.Xml.Fields.Count > 0)
-                        {
-                            foreach (var item in fileItem.Xml.Fields)
-                            {
-                                Console.WriteLine("\t{0}", item);
-                            }
-                        }else
-                        {
-                            Console.WriteLine("\tNo existen campos mapeados.");
-                        }
-                    }
-                    
-
-                    //EXCEL
-                    fileItem.Excel = new Excel(fileItem.FileData, fileItem.Xml);
-
-                    //Procesar
-                    Console.WriteLine("\nEjecución de Casos de Prueba:");
-                    var fecha = DateTime.Now;
-                    string fechaEjecucion = fecha.ToString("yyyyMMdd_HHmmss");
-                    resumenCasosPrueba.Add(Soap.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.Name}_{fechaEjecucion}"), fileItem));
-                    Publish.Save(Path.Combine(input.Workspace, "Reports", $"{fileItem.Name}_{fechaEjecucion}"), fileItem,fecha);
+                    ProcesarCasos(input, fileItem);
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine("\nERROR:");
                     Console.WriteLine(ex.Message);
-                    resumen.Add(string.Format("Proceso {0} ({1})", proceso, fileItem.Name));
+                    resumen.Add(string.Format("Proceso {0} ({1})", proceso, fileItem.CasosNegocio.Name));
                     resumen.Add("\t"+ex.Message);
 
                     if (ex.InnerException != null)
@@ -225,8 +165,85 @@ namespace Pollux
                     }
                 }
                 PublishSummary();
-                Console.WriteLine("\n-------------------------------- Proceso {0} Finalizado  ({1})--------------------------------", proceso, fileItem.Name);
+                Console.WriteLine("\n-------------------------------- Proceso {0} Finalizado  ({1})--------------------------------", proceso, fileItem.CasosNegocio.Name);
             }
+        }
+
+        private static void ProcesarCasos(Parameters input, ProcessFile fileItem)
+        {
+            input.Workspace = System.IO.Path.GetDirectoryName(fileItem.CasosNegocio.FileTemplate);
+            Console.WriteLine("Config:\t{0}", fileItem.CasosNegocio.FileConfig.Replace(input.Workspace, ""));
+            Console.WriteLine("Xml:\t{0}", fileItem.CasosNegocio.FileTemplate.Replace(input.Workspace, ""));
+            Console.WriteLine("Xls:\t{0}", fileItem.CasosNegocio.FileData.Replace(input.Workspace, ""));
+
+            //Config
+            Console.WriteLine("\nSOAP");
+            fileItem.CasosNegocio.Config = new Config(fileItem.CasosNegocio.FileConfig, input.Url);
+            Console.WriteLine("\tURL: {0}", fileItem.CasosNegocio.Config.Url);
+            if (fileItem.CasosNegocio.Config.Headers.Count == 0)
+            {
+                Console.WriteLine("\tError: No existen encabezados soap.");
+            }
+            else
+            {
+                foreach (var item in fileItem.CasosNegocio.Config.Headers)
+                {
+                    Console.WriteLine("\t{0}: {1}", item.Key, item.Value);
+                }
+            }
+
+            //XML
+            fileItem.CasosNegocio.Xml = new Xml(fileItem.CasosNegocio.FileTemplate);
+            if (fileItem.CasosNegocio.Xml.Fields.Count == 0
+                && (
+                        fileItem.CasosNegocio.Config.Type == Config.TypeProtocol.SOAP
+                            ||
+                        (fileItem.CasosNegocio.Config.Type == Config.TypeProtocol.REST
+                            &&
+                            (fileItem.CasosNegocio.Config.Method == Config.TypeMethod.POST || fileItem.CasosNegocio.Config.Method == Config.TypeMethod.POST)
+                        )
+                    )
+                )
+            {
+                Console.WriteLine("\nCampos detectatos en XML: {0}", fileItem.CasosNegocio.Xml.Fields.Count);
+                Console.WriteLine("\tError: No existen campos mapeados.");
+            }
+            else
+            {
+                Console.WriteLine("\nCampos detectatos en XML: {0}", fileItem.CasosNegocio.Xml.Fields.Count);
+                if (fileItem.CasosNegocio.Xml.Fields.Count > 0)
+                {
+                    foreach (var item in fileItem.CasosNegocio.Xml.Fields)
+                    {
+                        Console.WriteLine("\t{0}", item);
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("\tNo existen campos mapeados.");
+                }
+            }
+
+            var fecha = DateTime.Now;
+            string fechaEjecucion = fecha.ToString("yyyyMMdd_HHmmss");
+
+            //Procesar casos de negocio
+            Console.WriteLine("\nEjecución de Casos de Prueba:");
+            fileItem.CasosNegocio.Excel = new Excel(fileItem.CasosNegocio.FileData, fileItem.CasosNegocio.Xml);
+            resumenCasosPrueba.Add(Soap.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosNegocio));
+
+
+            //Procesar casos de borde
+            Console.WriteLine("\nEjecución de Casos de Borde:");
+            fileItem.CasosBorde.Config = fileItem.CasosNegocio.Config;
+            fileItem.CasosBorde.Xml = fileItem.CasosNegocio.Xml;
+            fileItem.CasosBorde.FileData = fileItem.CasosNegocio.FileData;
+            fileItem.CasosBorde.Excel = new ExcelCasoBorde(fileItem.CasosNegocio.Excel.Fields, fileItem.CasosBorde.Xml);
+            resumenCasosBorde.Add(Soap.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosBorde));
+
+
+            //Publicar informe
+            Publish.Save(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem, fecha);
         }
 
         private static void PublishSummary()

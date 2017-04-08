@@ -7,7 +7,7 @@
     <ProjectGuid>{39A7026F-C2AC-4779-940F-1DE8F7E10C2D}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SoapTest</RootNamespace>
+    <RootNamespace>Pollux</RootNamespace>
     <AssemblyName>Pollux</AssemblyName>
     <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -146,8 +146,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="ExcelCasoBorde.cs" />
     <Compile Include="Excel.cs" />
+    <Compile Include="ExcelField.cs" />
     <Compile Include="FileXml.cs" />
+    <Compile Include="IExcel.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Publish.cs" />
     <Compile Include="Response.cs" />

@@ -16,7 +16,7 @@ namespace Pollux
     public static class Soap
     {
         public static string VALOR_NULO1 = "NULL";
-        public static string VALOR_NULO2 = "${null}";
+        public static string VALOR_NULO2 = Excel.KeyNull;
 
         #region Validaciones
 
@@ -297,21 +297,23 @@ namespace Pollux
 
         #endregion
 
-        public static string[] Start(string path, ProcessFile processFile)
+        public static string[] Start(string path, ProcessFileConfiguration processFile)
         {
             List<string> result = new List<string>();
             int i = 1;
 
-            foreach (var xmlRequest in processFile.Excel.RequestXml)
-            {
-                Notify(i, xmlRequest, processFile,System.IO.Path.Combine(path, "Results"));
-                i++;
+            if (processFile?.Excel?.RequestXml?.Count > 0) {
+                foreach (var xmlRequest in processFile.Excel.RequestXml)
+                {
+                    Notify(i, xmlRequest, processFile, System.IO.Path.Combine(path, "Results"));
+                    i++;
+                }
             }
 
             return result.ToArray();
         }
 
-        private static string Notify(int i,Summary xmlRequest, ProcessFile processFile, string path)
+        private static string Notify(int i,Summary xmlRequest, ProcessFileConfiguration processFile, string path)
         {
             string mensaje = string.Empty;
             xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, "Request");

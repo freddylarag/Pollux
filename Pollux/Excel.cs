@@ -7,21 +7,20 @@ using System.Threading.Tasks;
 
 namespace Pollux
 {
-    public class Excel
+    public class Excel : IExcel
     {
-        private static int StartColumnData=2;
-        public Dictionary<string,IList<string>> Fields { get; private set; }
+        public static string KeyNull = "${null}";
+        public static string KeyEmpty = "${empty}";
 
-        //public IList<string[]> RequestXml { get; private set; }
+        private static int StartColumnData=2;
+
+        public Dictionary<string,IList<ExcelField>> Fields { get; private set; }
+
         public IList<Summary> RequestXml { get; private set; }
 
-        private string[] _xml { get; set; }
-
-        public int CountFiles { get; private set; }
-        
         public Excel(string fileExcel, Xml inputXml)
         {
-            Fields = new Dictionary<string,IList<string>>();
+            Fields = new Dictionary<string,IList<ExcelField>>();
             RequestXml = new List<Summary>();
             //if (inputXml != null)
             //{
@@ -42,12 +41,16 @@ namespace Pollux
         {
             StartColumnData = startColumnData;
 
-            Fields = new Dictionary<string, IList<string>>();
+            Fields = new Dictionary<string, IList<ExcelField>>();
             RequestXml = new List<Summary>();
             _xml = inputXml.Request;
             ProcessFiels(fileExcel, inputXml.Fields);
             ProcessXml();
         }
+
+        private string[] _xml { get; set; }
+
+        public int CountFiles { get; private set; }
 
         private void ProcessXml()
         {
@@ -64,17 +67,17 @@ namespace Pollux
                             string line = _xml[fila];
                             if (line.IndexOf(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField)) >= 0)
                             {
-                                if (row.Value[i].Trim().Equals("${empty}", StringComparison.InvariantCultureIgnoreCase))
+                                if (row.Value[i].Value.Trim().Equals(KeyEmpty, StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     xmlRequest[fila] = line.Replace(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField), "");
                                 }
-                                else if (row.Value[i].Trim().Equals("${null}", StringComparison.InvariantCultureIgnoreCase))
+                                else if (row.Value[i].Value.Trim().Equals(KeyNull, StringComparison.InvariantCultureIgnoreCase))
                                 {
                                     xmlRequest[fila] = "<!--" + line.Replace(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField), "").Trim() + "-->";
                                 }
                                 else
                                 {
-                                    xmlRequest[fila] = line.Replace(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField), row.Value[i]);
+                                    xmlRequest[fila] = line.Replace(string.Format("{0}{1}{2}", Xml.PrefixField, row.Key, Xml.SuffixField), row.Value[i].Value);
                                 }
                                 break;
                             }
@@ -157,12 +160,23 @@ namespace Pollux
                 {
                     if (fielsXml.Any(x => x == item[0]))
                     {
-                        List<string> list = new List<string>();
+                        List<ExcelField> list = new List<ExcelField>();
                         for (int i = StartColumnData; i < item.Count; i++)
                         {
                             if (!string.IsNullOrWhiteSpace(header[i]))
                             {
-                                list.Add((item[i]));
+                                var field = new ExcelField
+                                {
+                                    Name = item[0],
+                                    Value = item[i]
+                                };
+
+                                //Valida el tipo
+                                ExcelFieldType tipo = ExcelFieldType.None;
+                                Enum.TryParse(item[1]?.Value?.ToString()?.Replace(":",""), true, out tipo);
+                                field.Type = tipo;
+
+                                list.Add(field);
                             }
                         }
                         Fields.Add(item[0], list);
@@ -171,7 +185,6 @@ namespace Pollux
                 }
             }
         }
-
 
     }
 }

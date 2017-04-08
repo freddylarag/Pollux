@@ -13,7 +13,7 @@ namespace Pollux
         private static string FileCss = string.Empty;
         private static DateTime FechaProceso;
 
-        public static void Save(string path, ProcessFile process,DateTime fecha)
+        public static void Save(string path, ProcessFile process, DateTime fecha)
         {
             FechaProceso = fecha;
 
@@ -30,9 +30,9 @@ namespace Pollux
             File.Copy(css, Path.Combine(path, FileCss));
 
 
-            PageCasosNegocio(path, process);
-            PageCasosBorde(path, process);
-            PageInfo(path, process);
+            PageCasos(Path.Combine(path, "Index.html"), process.CasosNegocio, Pagina.CasosNegocio);
+            PageCasos(Path.Combine(path, "SpecialTests.html"), process.CasosBorde, Pagina.CasosBorde);
+            PageInfo(path, process.CasosNegocio);
         }
 
         #region Metodos transversales
@@ -54,12 +54,12 @@ namespace Pollux
             return string.Format("      <title>{0} - {1}</title>", Program.ApplicationName, Program.ApplicationDescription);
         }
 
-        private static string Title(ProcessFile process)
+        private static string Title(ProcessFileConfiguration process)
         {
             return "<h1 class=\"center\">" + process.Config.Description + "</h1>";
         }
 
-        private static List<string> NavigationBar(ProcessFile process, Pagina pagina)
+        private static List<string> NavigationBar(ProcessFileConfiguration process, Pagina pagina)
         {
             List<string> html = new List<string>();
 
@@ -77,7 +77,7 @@ namespace Pollux
 
         #region Pagina Principal de hallazgos
 
-        private static void PageCasosNegocio(string path,ProcessFile process)
+        private static void PageCasos(string path, ProcessFileConfiguration process, Pagina pagina)
         {
             List<string> html = new List<string>();
             html.Add("<html>");
@@ -86,7 +86,7 @@ namespace Pollux
             html.Add(Styles());
             html.Add("  </header>");
             html.Add("  <body>");
-            html.AddRange(NavigationBar(process, Pagina.CasosNegocio));
+            html.AddRange(NavigationBar(process, pagina));
             html.Add("      <div class=\"content\">");
             html.Add(Title(process));
             html.AddRange(ResumenCasos(process));
@@ -94,10 +94,10 @@ namespace Pollux
             html.Add("      </div>");
             html.Add("  </body>");
             html.Add("</html>");
-            File.WriteAllLines(Path.Combine(path, "Index.html"), html.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(path, html.ToArray(), Encoding.UTF8);
         }
 
-        private static List<string> ResumenCasos(ProcessFile process)
+        private static List<string> ResumenCasos(ProcessFileConfiguration process)
         {
             List<string> html = new List<string>();
 
@@ -118,10 +118,10 @@ namespace Pollux
                 html.Add("</td>");
             }
 
-            html.Add(string.Format("      <td>Casos Ejecutados: {0}</td>", process.Excel.RequestXml.Count));
-            html.Add(string.Format("      <td>Casos Correctos: {0}</td>", process.Excel.RequestXml.Where(x => x.IsCorrect).Count()));
-            html.Add(string.Format("      <td>Casos Erroneos: {0}</td>", process.Excel.RequestXml.Where(x => !x.IsCorrect).Count()));
-            html.Add(string.Format("      <td>Fecha Ejecución: {0}</td>", FechaProceso.ToString("dd/MM/yyyy HH:mm:ss")));
+            html.Add(string.Format("      <td>Casos Ejecutados: <b>{0}</b></td>", process.Excel.RequestXml.Count));
+            html.Add(string.Format("      <td>Casos Correctos: <b>{0}</b></td>", process.Excel.RequestXml.Where(x => x.IsCorrect).Count()));
+            html.Add(string.Format("      <td>Casos Erroneos: <b>{0}</b></td>", process.Excel.RequestXml.Where(x => !x.IsCorrect).Count()));
+            html.Add(string.Format("      <td>Fecha Ejecución: <b>{0}</b></td>", FechaProceso.ToString("dd/MM/yyyy HH:mm:ss")));
             html.Add("  </tr>");
             html.Add("<table>");
             html.Add("<br/><br/>");
@@ -129,15 +129,16 @@ namespace Pollux
             return html;
         }
 
-        private static List<string> Body(ProcessFile process, string path)
+        private static List<string> Body(ProcessFileConfiguration process, string path)
         {
             List<string> html = new List<string>();
             html.Add("<table>");
 
             //Encabezado
             html.Add("<tr>");
-            html.Add(string.Format("<td>#</td>"));
-            html.Add(string.Format("<td>Campos</td>"));
+            html.Add(string.Format("<td><b>#</b></td>"));
+            html.Add(string.Format("<td><b>Campos</b></td>"));
+            html.Add(string.Format("<td><b>Tipo Dato</b></td>"));
             if (process.Excel?.Fields?.Count > 0)
             {
                 for (var i = 0; i < process.Excel.Fields.First().Value.Count; i++)
@@ -160,6 +161,7 @@ namespace Pollux
                     html.Add("<tr>");
                     html.Add(string.Format("<td style='text-align: center;'>{0}</td>", j));
                     html.Add(string.Format("<th class=\"panelInfo left\">{0}</th>", item.Key));
+                    html.Add(string.Format("<th class=\"panelInfo left\">{0}</th>", item.Value.FirstOrDefault()?.ToString()));
                     foreach (var caso in item.Value)
                     {
                         html.Add(string.Format("<td>{0}</td>", SpecialKey(caso)));
@@ -177,7 +179,7 @@ namespace Pollux
 
             //Evidencia de request
             html.Add("<tr>");
-            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">Evidencia</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"3\">Evidencia</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 html.Add("<td>");
@@ -196,7 +198,7 @@ namespace Pollux
 
             //StatusCode
             html.Add("<tr>");
-            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">StatusCode</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"3\">StatusCode</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 html.Add("<td>");
@@ -207,7 +209,7 @@ namespace Pollux
 
             //TimeOut
             html.Add("<tr>");
-            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">TimeOut</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"3\">TimeOut</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 html.Add("<td>");
@@ -218,7 +220,7 @@ namespace Pollux
 
             //Status
             html.Add("<tr>");
-            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"2\">Estado</td>"));
+            html.Add(string.Format("<td style=\"text-align: center\" colspan=\"3\">Estado</td>"));
             foreach (var item in process.Excel.RequestXml)
             {
                 if (item.IsCorrect)
@@ -242,50 +244,50 @@ namespace Pollux
             return html;
         }
 
-        private static string SpecialKey(string value)
+        private static string SpecialKey(ExcelField value)
         {
-            if (value=="" || value.Trim().Equals("${empty}", StringComparison.InvariantCultureIgnoreCase))
+            if (value.Value == "" || value.Value.Trim().Equals(Excel.KeyEmpty, StringComparison.InvariantCultureIgnoreCase))
             {
                 return "<div class=\"empty\">EMPTY</div>";
             }
-            if (value.Trim().Equals("${null}", StringComparison.InvariantCultureIgnoreCase))
+            if (value.Value.Trim().Equals(Excel.KeyNull, StringComparison.InvariantCultureIgnoreCase))
             {
                 return "<div class=\"null\">NULL</div>";
             }
 
-            return value;
+            return value.Value;
         }
 
         #endregion
 
-        #region Pagina de Pruebas de borde
+        //#region Pagina de Pruebas de borde
 
-        private static void PageCasosBorde(string path, ProcessFile process)
-        {
-            List<string> html = new List<string>();
+        //private static void PageCasosBorde(string path, ProcessFileConfiguration process)
+        //{
+        //    List<string> html = new List<string>();
 
-            html.Add("<html>");
-            html.Add("  <header>");
-            html.Add(TitleBrowser());
-            html.Add(Styles());
-            html.Add("  </header>");
-            html.Add("  <body>");
-            html.AddRange(NavigationBar(process, Pagina.CasosBorde));
-            html.Add("      <div class=\"content\">");
-            html.Add(Title(process));
-            html.Add("          <h1>En construcción</h1>");
-            html.Add("      </div>");
-            html.Add("  </body>");
-            html.Add("</html>");
+        //    html.Add("<html>");
+        //    html.Add("  <header>");
+        //    html.Add(TitleBrowser());
+        //    html.Add(Styles());
+        //    html.Add("  </header>");
+        //    html.Add("  <body>");
+        //    html.AddRange(NavigationBar(process, Pagina.CasosBorde));
+        //    html.Add("      <div class=\"content\">");
+        //    html.Add(Title(process));
+        //    html.Add("          <h1>En construcción</h1>");
+        //    html.Add("      </div>");
+        //    html.Add("  </body>");
+        //    html.Add("</html>");
 
-            File.WriteAllLines(Path.Combine(path, "SpecialTests.html"), html.ToArray(), Encoding.UTF8);
-        }
+        //    File.WriteAllLines(Path.Combine(path, "SpecialTests.html"), html.ToArray(), Encoding.UTF8);
+        //}
 
-        #endregion
+        //#endregion
 
         #region Pagina Informacion
 
-        private static void PageInfo(string path, ProcessFile process)
+        private static void PageInfo(string path, ProcessFileConfiguration process)
         {
             List<string> html = new List<string>();
 

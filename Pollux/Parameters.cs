@@ -41,11 +41,18 @@ namespace Pollux
                         string fileConfig = config.FirstOrDefault(x => x.Replace(".config", ".xml").ToUpper() == item.ToUpper());
                         if (!string.IsNullOrWhiteSpace(fileXlsx))
                         {
-                            ProcessFiles.Add(new ProcessFile() { FileTemplate = item, FileData = fileXlsx, FileConfig = fileConfig });
+                            ProcessFiles.Add(new ProcessFile() {
+                                CasosNegocio = new ProcessFileConfiguration { FileTemplate = item, FileData = fileXlsx, FileConfig = fileConfig },
+                                CasosBorde = new ProcessFileConfiguration { FileTemplate = item, FileData = fileXlsx, FileConfig = fileConfig },
+                            });
                         }
                         else if (!string.IsNullOrWhiteSpace(fileXls))
                         {
-                            ProcessFiles.Add(new ProcessFile() { FileTemplate = item, FileData = fileXls, FileConfig = fileConfig });
+                            ProcessFiles.Add(new ProcessFile()
+                            {
+                                CasosNegocio = new ProcessFileConfiguration { FileTemplate = item, FileData = fileXls, FileConfig = fileConfig },
+                                CasosBorde = new ProcessFileConfiguration { FileTemplate = item, FileData = fileXls, FileConfig = fileConfig },
+                            });
                         }
                     }
                 }
