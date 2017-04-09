@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Pollux
 {
-    public class HttpHelper
+    public class HttpHelper:IHttpHelper
     {
         public Response HttpCall(string[] xml, Config config)
         {

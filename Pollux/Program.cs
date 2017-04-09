@@ -46,7 +46,7 @@ namespace Pollux
                     }
                     else
                     {
-                        Procesar(input);
+                        bool status=Procesar(input, new HttpHelper(),true);
 
                         if (resumen.Count > 0)
                         {
@@ -111,8 +111,9 @@ namespace Pollux
         }
 
 
-        static void Procesar(Parameters input)
+        public static bool Procesar(Parameters input, IHttpHelper http, bool ejecutarCasosNegocio)
         {
+            bool status = true;
             int proceso = 0;
             foreach (var fileItem in input.ProcessFiles)
             {
@@ -120,10 +121,11 @@ namespace Pollux
                 Console.WriteLine("\n-------------------------------- Proceso {0} Iniciado  ({1})--------------------------------", proceso, fileItem.CasosNegocio.Name);
                 try
                 {
-                    ProcesarCasos(input, fileItem);
+                    ProcesarCasos(input, fileItem, http, ejecutarCasosNegocio);
                 }
                 catch (Exception ex)
                 {
+                    status = false;
                     Console.WriteLine("\nERROR:");
                     Console.WriteLine(ex.Message);
                     resumen.Add(string.Format("Proceso {0} ({1})", proceso, fileItem.CasosNegocio.Name));
@@ -138,9 +140,11 @@ namespace Pollux
                 PublishSummary();
                 Console.WriteLine("\n-------------------------------- Proceso {0} Finalizado  ({1})--------------------------------", proceso, fileItem.CasosNegocio.Name);
             }
+
+            return status;
         }
 
-        private static void ProcesarCasos(Parameters input, ProcessFile fileItem)
+        private static void ProcesarCasos(Parameters input, ProcessFile fileItem, IHttpHelper http, bool ejecutarCasosNegocio)
         {
             input.Workspace = System.IO.Path.GetDirectoryName(fileItem.CasosNegocio.FileTemplate);
             Console.WriteLine("Config:\t{0}", fileItem.CasosNegocio.FileConfig.Replace(input.Workspace, ""));
@@ -199,9 +203,11 @@ namespace Pollux
             string fechaEjecucion = fecha.ToString("yyyyMMdd_HHmmss");
 
             //Procesar casos de negocio
-            Console.WriteLine("\nEjecución de Casos de Prueba:");
             fileItem.CasosNegocio.Excel = new Excel(fileItem.CasosNegocio.FileData, fileItem.CasosNegocio.Xml, 2);
-            resumenCasosPrueba.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}","Results_Basics"), fileItem.CasosNegocio));
+            if (ejecutarCasosNegocio) {
+                Console.WriteLine("\nEjecución de Casos de Prueba:");
+                resumenCasosPrueba.Add(new SoapManager(http).Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}", "Results_Basics"), fileItem.CasosNegocio));
+            }
 
             if (fileItem.CasosNegocio.Config.AutomaticSpecialTest)
             {
@@ -211,7 +217,7 @@ namespace Pollux
                 fileItem.CasosBorde.Xml = fileItem.CasosNegocio.Xml;
                 fileItem.CasosBorde.FileData = fileItem.CasosNegocio.FileData;
                 fileItem.CasosBorde.Excel = new ExcelCasoBorde(fileItem.CasosNegocio.Excel.Fields, fileItem.CasosBorde.Xml);
-                resumenCasosBorde.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}", "Results_Specials"), fileItem.CasosBorde));
+                resumenCasosBorde.Add(new SoapManager(http).Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}", "Results_Specials"), fileItem.CasosBorde));
             }
 
             //Publicar informe

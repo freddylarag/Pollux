@@ -1,0 +1,8 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <soap:Body>
+    <InsertarProductoResponse xmlns="http://tempuri.org/">
+      <InsertarProductoResult>ec7704ed-29f0-482d-8f11-68d95ae787c4</InsertarProductoResult>
+    </InsertarProductoResponse>
+  </soap:Body>
+</soap:Envelope>

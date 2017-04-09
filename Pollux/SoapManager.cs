@@ -6,16 +6,20 @@ using System.Xml.Linq;
 
 namespace Pollux
 {
-    public static class SoapManager
+    public class SoapManager
     {
         public static string VALOR_NULO1 = "NULL";
         public static string VALOR_NULO2 = Excel.KeyNull;
-        private static HttpHelper Http=new HttpHelper();
+        private IHttpHelper Http;
 
+        public SoapManager(IHttpHelper http)
+        {
+            Http = http;
+        }
 
         #region Validaciones
 
-        public static bool ValidateSection(string response, ValidationCollections validations)
+        public bool ValidateSection(string response, ValidationCollections validations)
         {
             XDocument xml = null;
             try
@@ -75,7 +79,7 @@ namespace Pollux
             return body && header && fault;
         }
 
-        private static bool ValidateResponse(XDocument xml, List<Validation> validations){
+        private bool ValidateResponse(XDocument xml, List<Validation> validations){
             try
             {
                 if (xml == null)
@@ -115,7 +119,7 @@ namespace Pollux
             public string Value { get; set; }
         }
 
-        public static ValidationValue ExtractValue(XDocument xml, string tag)
+        public ValidationValue ExtractValue(XDocument xml, string tag)
         {
             IEnumerable<XElement> node = null;
             if (xml != null && !string.IsNullOrWhiteSpace(tag))
@@ -166,7 +170,7 @@ namespace Pollux
             };
         }
 
-        private static string IdentifyXmlns(string itemTag, IEnumerable<XElement> node)
+        private string IdentifyXmlns(string itemTag, IEnumerable<XElement> node)
         {
             string xmlns = string.Empty;
 
@@ -199,7 +203,7 @@ namespace Pollux
             return xmlns;
         }
 
-        private static void ValidationState(ValidationValue valor, Validation validationsItem)
+        private void ValidationState(ValidationValue valor, Validation validationsItem)
         {
             if (valor != null && !valor.IsExist)
             {
@@ -292,7 +296,7 @@ namespace Pollux
 
         #endregion
 
-        public static string[] Start(string path, ProcessFileConfiguration processFile)
+        public string[] Start(string path, ProcessFileConfiguration processFile)
         {
             List<string> result = new List<string>();
             int i = 1;
@@ -308,7 +312,7 @@ namespace Pollux
             return result.ToArray();
         }
 
-        private static string Notify(int i,Summary xmlRequest, ProcessFileConfiguration processFile, string path)
+        private string Notify(int i,Summary xmlRequest, ProcessFileConfiguration processFile, string path)
         {
             string mensaje = string.Empty;
             xmlRequest.Request.Path = WriteXml(i.ToString(), path, xmlRequest.Request?.ContentArray ?? new string[] {""}, "Request");
@@ -336,7 +340,7 @@ namespace Pollux
             return mensaje;
         }
  
-        private static string WriteXml(string iteracion, string path, string[] xml, string sufijo)
+        private string WriteXml(string iteracion, string path, string[] xml, string sufijo)
         {
             if (!System.IO.Directory.Exists(path))
             {
@@ -347,7 +351,7 @@ namespace Pollux
             return filepath;
         }
 
-        private static string WriteXml(string iteracion, string path, string xml, string sufijo)
+        private string WriteXml(string iteracion, string path, string xml, string sufijo)
         {
             if (!System.IO.Directory.Exists(path))
             {
