@@ -8,11 +8,17 @@ namespace Pollux
 {
     public class ExcelField
     {
+        private List<ExcelFieldType> listGuid = new List<ExcelFieldType>
+        {
+            ExcelFieldType.XsdGuid,
+        };
         private List<ExcelFieldType> listNumeric = new List<ExcelFieldType> {
-            ExcelFieldType.XsdDecimal,
-            ExcelFieldType.XsdDouble,
-            ExcelFieldType.XsdFloat,
+            ExcelFieldType.XsdShort,
+            ExcelFieldType.XsdInt,
             ExcelFieldType.XsdInteger,
+            ExcelFieldType.XsdFloat,
+            ExcelFieldType.XsdDouble,
+            ExcelFieldType.XsdDecimal,
         };
         private List<ExcelFieldType> listText = new List<ExcelFieldType> {
             ExcelFieldType.XsdChar,
@@ -45,6 +51,10 @@ namespace Pollux
                 {
                     IsText = true;
                 }
+                else if (listGuid.Any(x => x == type))
+                {
+                    IsGuid = true;
+                }
                 else
                 {
                     throw new NotImplementedException("Tipo no Implementado.");
@@ -62,19 +72,48 @@ namespace Pollux
         public int MinStringhValue { get; set; }
         public int MaxStringValue { get; set; }
 
-        public bool IsNumeric { get; set; }
-        public bool IsDate { get; set; }
-        public bool IsText { get; set; }
+        public string MinValue {
+            get {
+                if (IsNumeric)
+                {
+                    return "0";
+                }
+                else if (IsGuid)
+                {
+                    return Guid.NewGuid().ToString();
+                }
+                else if (IsDate)
+                {
+                    return DateTime.MinValue.ToLongDateString();
+                }
+                else
+                {
+                    return "A";
+                }
+            }
+        }
+
+        public bool IsNumeric { get; private set; }
+        public bool IsDate { get; private set; }
+        public bool IsText { get; private set; }
+        public bool IsGuid { get; private set; }
     }
 
     public enum ExcelFieldType
     {
         None,
+
+        XsdGuid,
+
         XsdString,
         XsdChar,
-        XsdInteger,
+
         XsdDate,
-        XsdDateTime, 
+        XsdDateTime,
+
+        XsdShort,
+        XsdInt,
+        XsdInteger,
         XsdFloat,
         XsdDouble, 
         XsdDecimal,

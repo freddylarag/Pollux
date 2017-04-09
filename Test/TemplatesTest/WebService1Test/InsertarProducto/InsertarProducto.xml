@@ -1,0 +1,18 @@
+<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:tem="http://tempuri.org/">
+   <soap:Header/>
+   <soap:Body>
+      <tem:InsertarProducto>
+         <!--Optional:-->
+         <tem:producto>
+            <tem:ProductoID>[[ProductoID]]</tem:ProductoID>
+            <!--Optional:-->
+            <tem:Nombre>[[Nombre]]</tem:Nombre>
+            <!--Optional:-->
+            <tem:SKU>[[SKU]]</tem:SKU>
+            <tem:Categoria>[[Categoria]]</tem:Categoria>
+            <tem:Precio>[[Precio]]</tem:Precio>
+            <tem:Stock>[[Stock]]</tem:Stock>
+         </tem:producto>
+      </tem:InsertarProducto>
+   </soap:Body>
+</soap:Envelope>
