@@ -10,9 +10,9 @@ namespace Pollux
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
         static List<string[]> resumenCasosBorde = new List<string[]>();
-        public static string ApplicationName = "Pollux v0.16 Beta";
+        public static string ApplicationName = "Pollux v0.17 Beta";
         public static string ApplicationDescription = "Automatización de casos de prueba para servicios SOAP y REST";
-        public static string ApplicationBuild = "build 02/04/2017";
+        public static string ApplicationBuild = "build 09/04/2017";
         public static string Autor = "Freddy Lara - freddylarag@gmail.com";
 
         static void Main(string[] args)
@@ -200,18 +200,19 @@ namespace Pollux
 
             //Procesar casos de negocio
             Console.WriteLine("\nEjecución de Casos de Prueba:");
-            fileItem.CasosNegocio.Excel = new Excel(fileItem.CasosNegocio.FileData, fileItem.CasosNegocio.Xml);
-            resumenCasosPrueba.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosNegocio));
+            fileItem.CasosNegocio.Excel = new Excel(fileItem.CasosNegocio.FileData, fileItem.CasosNegocio.Xml, 2);
+            resumenCasosPrueba.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}","Results_Basics"), fileItem.CasosNegocio));
 
-
-            //Procesar casos de borde
-            Console.WriteLine("\nEjecución de Casos de Borde:");
-            fileItem.CasosBorde.Config = fileItem.CasosNegocio.Config;
-            fileItem.CasosBorde.Xml = fileItem.CasosNegocio.Xml;
-            fileItem.CasosBorde.FileData = fileItem.CasosNegocio.FileData;
-            fileItem.CasosBorde.Excel = new ExcelCasoBorde(fileItem.CasosNegocio.Excel.Fields, fileItem.CasosBorde.Xml);
-            resumenCasosBorde.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem.CasosBorde));
-
+            if (fileItem.CasosNegocio.Config.AutomaticSpecialTest)
+            {
+                //Procesar casos de borde
+                Console.WriteLine("\nEjecución de Casos de Borde:");
+                fileItem.CasosBorde.Config = fileItem.CasosNegocio.Config;
+                fileItem.CasosBorde.Xml = fileItem.CasosNegocio.Xml;
+                fileItem.CasosBorde.FileData = fileItem.CasosNegocio.FileData;
+                fileItem.CasosBorde.Excel = new ExcelCasoBorde(fileItem.CasosNegocio.Excel.Fields, fileItem.CasosBorde.Xml);
+                resumenCasosBorde.Add(SoapManager.Start(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}", "Results_Specials"), fileItem.CasosBorde));
+            }
 
             //Publicar informe
             Publish.Save(Path.Combine(input.Workspace, "Reports", $"{fileItem.CasosNegocio.Name}_{fechaEjecucion}"), fileItem, fecha);

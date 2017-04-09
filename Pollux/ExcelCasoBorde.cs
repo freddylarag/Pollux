@@ -7,18 +7,13 @@ using System.Threading.Tasks;
 
 namespace Pollux
 {
-    public class ExcelCasoBorde : IExcel
+    public class ExcelCasoBorde : ExcelBase
     {
-        public Dictionary<string,IList<ExcelField>> Fields { get; private set; }
 
-        public IList<Summary> RequestXml { get; private set; }
-
-        public ExcelCasoBorde(Dictionary<string, IList<ExcelField>> fields, Xml inputXml)
+        public ExcelCasoBorde(Dictionary<string, IList<ExcelField>> fields, Xml inputXml) : base(inputXml)
         {
-            Fields = new Dictionary<string,IList<ExcelField>>();
-            RequestXml = new List<Summary>();
-
             CreateTest(fields, inputXml);
+            ProcessXml();
 
             if (RequestXml.Count == 0)
             {
@@ -44,6 +39,7 @@ namespace Pollux
                     Casos(fieldNegocio, fieldsNegocio, CasosBordeTexto(fieldNegocio));
                 }
             }
+            CountFiles = Fields.FirstOrDefault().Value.Count();
         }
 
         private Dictionary<string, IList<ExcelField>> CasosBordeNumerico(ExcelField field)
@@ -55,11 +51,61 @@ namespace Pollux
                             Name = field.Name ,
                             Type=field.Type,
                             Value=field.MinValue,
+                            IsTester=true,
                         },
                         new ExcelField {
                             Name = field.Name ,
                             Type=field.Type,
                             Value="A",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="-1",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="+1",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="1.1",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="1,1",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="1 1",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="01",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="${empty}",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="${null}",
+                            IsTester=true,
                         },
                     });
 
@@ -75,16 +121,19 @@ namespace Pollux
                             Name = field.Name ,
                             Type=field.Type,
                             Value=field.MinValue,
+                            IsTester=true,
                         },
                         new ExcelField {
                             Name = field.Name ,
                             Type=field.Type,
                             Value=Excel.KeyEmpty,
+                            IsTester=true,
                         },
                         new ExcelField {
                             Name = field.Name ,
                             Type=field.Type,
                             Value=Excel.KeyNull,
+                            IsTester=true,
                         }
                     });
 

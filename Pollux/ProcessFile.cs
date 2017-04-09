@@ -24,7 +24,7 @@ namespace Pollux
         public string FileConfig { get; set; }
         public string FileTemplate { get; set; }
         public string FileData { get; set; }
-        public IExcel Excel { get; set; }
+        public ExcelBase Excel { get; set; }
         public Config Config { get; set; }
         public Xml Xml { get; set; }
     }

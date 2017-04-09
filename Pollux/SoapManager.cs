@@ -300,7 +300,7 @@ namespace Pollux
             if (processFile?.Excel?.RequestXml?.Count > 0) {
                 foreach (var xmlRequest in processFile.Excel.RequestXml)
                 {
-                    Notify(i, xmlRequest, processFile, System.IO.Path.Combine(path, "Results"));
+                    Notify(i, xmlRequest, processFile, path);
                     i++;
                 }
             }

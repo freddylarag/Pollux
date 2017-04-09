@@ -21,11 +21,9 @@ namespace Pollux
             ExcelFieldType.XsdDecimal,
         };
         private List<ExcelFieldType> listText = new List<ExcelFieldType> {
-            ExcelFieldType.XsdChar,
             ExcelFieldType.XsdString,
         };
         private List<ExcelFieldType> listDate = new List<ExcelFieldType> {
-            ExcelFieldType.XsdDate,
             ExcelFieldType.XsdDateTime,
         };
         
@@ -57,10 +55,12 @@ namespace Pollux
                 }
                 else
                 {
-                    throw new NotImplementedException("Tipo no Implementado.");
+                    //throw new NotImplementedException("Tipo no Implementado.");
                 }
             }
         }
+
+        public bool IsTester { get; set; }
 
         public override string ToString()
         {
@@ -86,9 +86,13 @@ namespace Pollux
                 {
                     return DateTime.MinValue.ToLongDateString();
                 }
-                else
+                else if (IsText)
                 {
                     return "A";
+                }
+                else
+                {
+                    return Excel.KeyNull;
                 }
             }
         }
@@ -105,10 +109,10 @@ namespace Pollux
 
         XsdGuid,
 
-        XsdString,
-        XsdChar,
+        XsdBoolean,
 
-        XsdDate,
+        XsdString,
+
         XsdDateTime,
 
         XsdShort,

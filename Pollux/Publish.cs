@@ -17,6 +17,7 @@ namespace Pollux
         {
             FechaProceso = fecha;
 
+            //Copia el template CSS
             var css = ConfigurationManager.AppSettings["CSS"];
             if (!File.Exists(css))
             {
@@ -30,9 +31,17 @@ namespace Pollux
             File.Copy(css, Path.Combine(path, FileCss));
 
 
+            //Crea el html
             PageCasos(Path.Combine(path, "Index.html"), process.CasosNegocio, Pagina.CasosNegocio);
-            PageCasos(Path.Combine(path, "SpecialTests.html"), process.CasosBorde, Pagina.CasosBorde);
-            PageInfo(path, process.CasosNegocio);
+            if (process.CasosNegocio.Config.AutomaticSpecialTest)
+            {
+                PageCasos(Path.Combine(path, "SpecialTests.html"), process.CasosBorde, Pagina.CasosBorde);
+            }
+            else
+            {
+                PageSinCasosBorde(Path.Combine(path, "SpecialTests.html"), process.CasosNegocio);
+            }
+            PageInfo(Path.Combine(path, "Info.html"), process.CasosNegocio);
         }
 
         #region Metodos transversales
@@ -164,7 +173,14 @@ namespace Pollux
                     html.Add(string.Format("<th class=\"panelInfo left\">{0}</th>", item.Value.FirstOrDefault()?.ToString()));
                     foreach (var caso in item.Value)
                     {
-                        html.Add(string.Format("<td>{0}</td>", SpecialKey(caso)));
+                        if (caso.IsTester)
+                        {
+                            html.Add(string.Format("<td class=\"cellTester\">{0}</td>", SpecialKey(caso)));
+                        }
+                        else
+                        {
+                            html.Add(string.Format("<td>{0}</td>", SpecialKey(caso)));
+                        }
                     }
                     html.Add("</tr>");
                 }
@@ -260,30 +276,30 @@ namespace Pollux
 
         #endregion
 
-        //#region Pagina de Pruebas de borde
+        #region Pagina de Pruebas de borde
 
-        //private static void PageCasosBorde(string path, ProcessFileConfiguration process)
-        //{
-        //    List<string> html = new List<string>();
+        private static void PageSinCasosBorde(string path, ProcessFileConfiguration process)
+        {
+            List<string> html = new List<string>();
 
-        //    html.Add("<html>");
-        //    html.Add("  <header>");
-        //    html.Add(TitleBrowser());
-        //    html.Add(Styles());
-        //    html.Add("  </header>");
-        //    html.Add("  <body>");
-        //    html.AddRange(NavigationBar(process, Pagina.CasosBorde));
-        //    html.Add("      <div class=\"content\">");
-        //    html.Add(Title(process));
-        //    html.Add("          <h1>En construcción</h1>");
-        //    html.Add("      </div>");
-        //    html.Add("  </body>");
-        //    html.Add("</html>");
+            html.Add("<html>");
+            html.Add("  <header>");
+            html.Add(TitleBrowser());
+            html.Add(Styles());
+            html.Add("  </header>");
+            html.Add("  <body>");
+            html.AddRange(NavigationBar(process, Pagina.CasosBorde));
+            html.Add("      <div class=\"content\">");
+            html.Add(Title(process));
+            html.Add("          <h1>Los casos de borde fueron desactivados por configuración (AutomaticSpecialTest=False).</h1>");
+            html.Add("      </div>");
+            html.Add("  </body>");
+            html.Add("</html>");
 
-        //    File.WriteAllLines(Path.Combine(path, "SpecialTests.html"), html.ToArray(), Encoding.UTF8);
-        //}
+            File.WriteAllLines(path, html.ToArray(), Encoding.UTF8);
+        }
 
-        //#endregion
+        #endregion
 
         #region Pagina Informacion
 
@@ -302,6 +318,29 @@ namespace Pollux
             html.Add("      <div class=\"content\">");
             html.Add(Title(process));
 
+            //Configuraciones
+            html.Add("<table>");
+            html.Add("  <tr>");
+            html.Add(string.Format("      <th class=\"panelInfo\" colspan=\"2\">Configuraciones</th>"));
+            html.Add("  </tr>");
+            html.Add("  <tr>");
+            html.Add(string.Format("      <th class=\"panelInfo\">Campo</th>"));
+            html.Add(string.Format("      <th class=\"panelInfo\">Valor</th>"));
+            html.Add("  </tr>");
+
+            html.Add("  <tr>");
+            html.Add(string.Format("      <td>Description</td><td>{0}</td>", process.Config.Description));
+            html.Add("  </tr>");
+
+            html.Add("  <tr>");
+            html.Add(string.Format("      <td>AutomaticSpecialTest</td><td>{0}</td>", process.Config.AutomaticSpecialTest));
+            html.Add("  </tr>");
+
+            html.Add("<table>");
+
+            html.Add("<br/><br/>");
+
+            
             //header
             html.Add("<table>");
             html.Add("  <tr>");
@@ -333,7 +372,7 @@ namespace Pollux
             html.Add("  </body>");
             html.Add("</html>");
 
-            File.WriteAllLines(Path.Combine(path, "Info.html"), html.ToArray(), Encoding.UTF8);
+            File.WriteAllLines(path, html.ToArray(), Encoding.UTF8);
         }
 
         private static IEnumerable<string> ValidationSections(string title, List<Validation> validations)

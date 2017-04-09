@@ -9,6 +9,7 @@ namespace Pollux
 {
     public class Config
     {
+        public bool AutomaticSpecialTest { get; set; }
         public string Description { get; set; }
         public string Parameters { get; set; }
         public TypeProtocol Type { get; set; }
@@ -50,6 +51,18 @@ namespace Pollux
                     if(string.IsNullOrWhiteSpace(Description) || Description.Trim() == "?")
                     {
                         throw new NullReferenceException("La variable 'Description' no se encuentra definida.");
+                    }
+
+                    //AutomaticSpecialTest
+                    bool SpecialTest;
+                    string textoAutomaticSpecialTest = xml.Elements("Config")?
+                            .Elements("AutomaticSpecialTest")?
+                            .FirstOrDefault()?
+                            .Value;
+                    AutomaticSpecialTest = true;
+                    if (bool.TryParse(textoAutomaticSpecialTest, out SpecialTest))
+                    {
+                        AutomaticSpecialTest = SpecialTest;
                     }
 
                     //TypeProtocol
@@ -200,6 +213,9 @@ namespace Pollux
             string xml = @"
 <Config>
 	<Description>?</Description>
+    <!-- Opcional: Valor por omisión True -->
+    <AutomaticSpecialTest>True</AutomaticSpecialTest>
+
 	<EndPoint>
 		<Url>?</Url>
 		

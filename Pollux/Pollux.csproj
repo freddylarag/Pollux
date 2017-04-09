@@ -146,12 +146,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Config.cs" />
+    <Compile Include="ExcelBase.cs" />
     <Compile Include="ExcelCasoBorde.cs" />
     <Compile Include="Excel.cs" />
     <Compile Include="ExcelField.cs" />
     <Compile Include="FileXml.cs" />
     <Compile Include="HttpHelper.cs" />
-    <Compile Include="IExcel.cs" />
     <Compile Include="Parameters.cs" />
     <Compile Include="Publish.cs" />
     <Compile Include="Response.cs" />
