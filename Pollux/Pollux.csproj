@@ -154,6 +154,7 @@
     <Compile Include="Excel.cs" />
     <Compile Include="ExcelField.cs" />
     <Compile Include="FileXml.cs" />
+    <Compile Include="HttpHelperMock.cs" />
     <Compile Include="HttpHelper.cs" />
     <Compile Include="IHttpHelper.cs" />
     <Compile Include="Parameters.cs" />

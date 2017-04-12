@@ -30,9 +30,13 @@ namespace Pollux
                 {
                     Casos(fieldNegocio, fieldsNegocio, CasosBordeNumerico(fieldNegocio));
                 }
-                else if(fieldNegocio.IsDate)
+                else if (fieldNegocio.IsGuid)
                 {
-
+                    Casos(fieldNegocio, fieldsNegocio, CasosBordeGuid(fieldNegocio));
+                }
+                else if (fieldNegocio.IsDate)
+                {
+                    Casos(fieldNegocio, fieldsNegocio, CasosBordeFecha(fieldNegocio));
                 }
                 else if (fieldNegocio.IsText)
                 {
@@ -40,6 +44,75 @@ namespace Pollux
                 }
             }
             CountFiles = Fields.FirstOrDefault().Value.Count();
+        }
+
+        private Dictionary<string, IList<ExcelField>> CasosBordeGuid(ExcelField field)
+        {
+            Dictionary<string, IList<ExcelField>> list = new Dictionary<string, IList<ExcelField>>();
+
+            list.Add(field.Name, new List<ExcelField>() {
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value=Guid.NewGuid().ToString(),
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="${empty}",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="${null}",
+                            IsTester=true,
+                        },
+                    });
+
+            return list;
+        }
+
+
+        private Dictionary<string, IList<ExcelField>> CasosBordeFecha(ExcelField field)
+        {
+            Dictionary<string, IList<ExcelField>> list = new Dictionary<string, IList<ExcelField>>();
+
+            list.Add(field.Name, new List<ExcelField>() {
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value=DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss"),
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value=DateTime.MinValue.ToString("yyyy-MM-ddTHH:mm:ss"),
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value=DateTime.MaxValue.ToString("yyyy-MM-ddTHH:mm:ss"),
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="${empty}",
+                            IsTester=true,
+                        },
+                        new ExcelField {
+                            Name = field.Name ,
+                            Type=field.Type,
+                            Value="${null}",
+                            IsTester=true,
+                        },
+                    });
+
+            return list;
         }
 
         private Dictionary<string, IList<ExcelField>> CasosBordeNumerico(ExcelField field)

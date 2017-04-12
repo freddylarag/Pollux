@@ -84,7 +84,7 @@ namespace Pollux
                 }
                 else if (IsDate)
                 {
-                    return DateTime.MinValue.ToLongDateString();
+                    return DateTime.Now.ToString("yyyy-MM-ddTHH:mm:ss");
                 }
                 else if (IsText)
                 {

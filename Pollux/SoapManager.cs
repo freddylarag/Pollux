@@ -15,6 +15,7 @@ namespace Pollux
         public SoapManager(IHttpHelper http)
         {
             Http = http;
+            //Http = new HttpHelperMock();
         }
 
         #region Validaciones

@@ -10,9 +10,9 @@ namespace Pollux
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
         static List<string[]> resumenCasosBorde = new List<string[]>();
-        public static string ApplicationName = "Pollux v0.17 Beta";
+        public static string ApplicationName = "Pollux v0.18 Beta";
         public static string ApplicationDescription = "Automatización de casos de prueba para servicios SOAP y REST";
-        public static string ApplicationBuild = "build 09/04/2017";
+        public static string ApplicationBuild = "build 11/04/2017";
         public static string Autor = "Freddy Lara - freddylarag@gmail.com";
 
         static void Main(string[] args)
