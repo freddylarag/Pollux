@@ -34,7 +34,7 @@ namespace Pollux
             {
                 foreach (var item in xml)
                 {
-                    if (item.IndexOf("/.svn/") < 0)
+                    if (item.IndexOf("\\.sonar\\") < 0 && item.IndexOf("\\.vs\\") < 0 && item.IndexOf("\\.svn\\") < 0 && item.IndexOf("\\Results_Basics\\") < 0 && item.IndexOf("\\Results_Specials\\") < 0 )
                     {
                         string fileXlsx = xlsx.FirstOrDefault(x => x.Replace(".xlsx", ".xml").ToUpper() == item.ToUpper());
                         string fileXls = xls.FirstOrDefault(x => x.Replace(".xls", ".xml").ToUpper() == item.ToUpper());

@@ -2,7 +2,7 @@
 
 ; HM NIS Edit Wizard helper defines
 !define PRODUCT_NAME "Pollux"
-!define PRODUCT_VERSION "v0.18"
+!define PRODUCT_VERSION "v0.19"
 !define PRODUCT_PUBLISHER "Freddy Lara"
 !define PRODUCT_DIR_REGKEY "Software\Microsoft\Windows\CurrentVersion\App Paths\Pollux.exe"
 !define PRODUCT_UNINST_KEY "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"
@@ -35,7 +35,7 @@
 ; MUI end ------
 
 Name "${PRODUCT_NAME} ${PRODUCT_VERSION}"
-OutFile "Release\Pollux ${PRODUCT_VERSION}.exe"
+OutFile "Pollux ${PRODUCT_VERSION}.exe"
 InstallDir "$PROGRAMFILES\Pollux"
 InstallDirRegKey HKLM "${PRODUCT_DIR_REGKEY}" ""
 ShowInstDetails show

@@ -10,9 +10,9 @@ namespace Pollux
         static List<string> resumen = new List<string>();
         static List<string[]> resumenCasosPrueba = new List<string[]>();
         static List<string[]> resumenCasosBorde = new List<string[]>();
-        public static string ApplicationName = "Pollux v0.18 Beta";
+        public static string ApplicationName = "Pollux v0.19 Beta";
         public static string ApplicationDescription = "Automatización de casos de prueba para servicios SOAP y REST";
-        public static string ApplicationBuild = "build 11/04/2017";
+        public static string ApplicationBuild = "build 30/05/2017";
         public static string Autor = "Freddy Lara - freddylarag@gmail.com";
 
         static void Main(string[] args)
@@ -48,19 +48,28 @@ namespace Pollux
                     {
                         bool status=Procesar(input, new HttpHelper(),true);
 
+                        //Resumen de errores de negocio
+                        Console.Write("\nResumen de errores detectados en Pruebas de Negocios: ");
                         if (resumen.Count > 0)
                         {
-                            Console.WriteLine("\nResumen de errores detectados:");
+                            Environment.ExitCode = 1;
+                            Console.WriteLine();
                             foreach (var item in resumen)
                             {
                                 Console.WriteLine(item);
                             }
+                        }else
+                        {
+                            Console.Write("0");
                         }
+
+                        //Resumen de errores de pruebas de borde
+                        Console.Write("\nResumen de errores detectados en Pruebas de Borde: ");
                         if (resumenCasosPrueba.Count > 0)
                         {
-                            Console.WriteLine("\nCasos de Prueba:");
                             foreach (var item in resumenCasosPrueba)
                             {
+                                Console.WriteLine();
                                 foreach (var subitem in item)
                                 {
                                     Console.WriteLine(subitem);
@@ -70,7 +79,9 @@ namespace Pollux
                                     }
                                 }
                             }
-
+                        }else
+                        {
+                            Console.Write("0");
                         }
                     }
                 }

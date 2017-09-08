@@ -14,11 +14,12 @@ namespace Pollux
 
         public string RelativePath(string workspace)
         { 
-            string relative = Path.ToLower().Replace(workspace.ToLower(), "");
+            string relative = Path.ToLower().Replace((System.IO.Path.GetDirectoryName(workspace)).ToLower(), "");
             if(relative.Substring(0,1)=="\\")
             {
                 relative = relative.Substring(1);
             }
+            relative= relative.Replace("\\", "/");
             return relative;
         }
 

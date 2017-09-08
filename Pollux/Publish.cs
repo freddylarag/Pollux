@@ -76,7 +76,7 @@ namespace Pollux
             html.Add(string.Format("          <li><a {1} href=\"{0}\">Casos de Negocio</a></li>", "Index.html", pagina==Pagina.CasosNegocio ? "class=\"active\"" : ""));
             html.Add(string.Format("          <li><a {1} href=\"{0}\">Casos de Borde</a></li>", "SpecialTests.html", pagina == Pagina.CasosBorde ? "class=\"active\"" : ""));
             html.Add(string.Format("          <li><a {1} href=\"{0}\">Información de Servicio</a></li>", "Info.html", pagina == Pagina.Info ? "class=\"active\"" : ""));
-            html.Add("          <li style=\"float:right\"><a href=\"#\">Acerca de Pollux</a></li>");
+            html.Add("          <li style=\"float:right\"><a href=\"#\">Acerca de " + Program.ApplicationName + "</a></li>");
             html.Add("      </ul>");
 
             return html;

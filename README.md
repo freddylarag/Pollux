@@ -1,4 +1,4 @@
-# Pollux
+# Pollux v0.19 Beta
 Herramienta para la automatización de casos de prueba para servicios web (SOAP y REST), especialmente creada para implementación de pruebas sobre un flujo de Integración Continua.
 
 ## Prerrequisitos
